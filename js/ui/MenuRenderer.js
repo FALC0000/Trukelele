@@ -58,24 +58,28 @@ export class MenuRenderer {
           background: var(--color-bg-dark);
           background-image: radial-gradient(circle at center, #1a2332 0%, #0a0f1a 100%);
           display: flex;
-          align-items: center;
+          align-items: flex-start;
           justify-content: center;
           z-index: 5000;
+          overflow-y: auto;
+          -webkit-overflow-scrolling: touch;
         }
         
         .menu-content {
           width: 100%;
           max-width: 600px;
-          padding: var(--space-xl);
+          padding: var(--space-xl) var(--space-md);
+          padding-bottom: var(--space-2xl);
         }
         
         .menu-header {
           text-align: center;
-          margin-bottom: var(--space-2xl);
+          margin-bottom: var(--space-xl);
+          padding-top: var(--space-lg);
         }
         
         .menu-title {
-          font-size: 4rem;
+          font-size: clamp(2rem, 10vw, 4rem);
           color: var(--color-gold);
           letter-spacing: 4px;
           margin-bottom: var(--space-xs);
@@ -83,39 +87,41 @@ export class MenuRenderer {
         }
         
         .menu-subtitle {
-          font-size: 1.2rem;
+          font-size: clamp(0.9rem, 3vw, 1.2rem);
           color: var(--color-text-secondary);
         }
         
         .menu-section {
-          margin-bottom: var(--space-xl);
+          margin-bottom: var(--space-lg);
         }
         
         .menu-section-title {
-          font-size: 1rem;
+          font-size: 0.85rem;
           color: var(--color-text-muted);
           text-transform: uppercase;
           letter-spacing: 2px;
-          margin-bottom: var(--space-md);
+          margin-bottom: var(--space-sm);
         }
         
         .mode-selector {
           display: grid;
           grid-template-columns: repeat(2, 1fr);
-          gap: var(--space-md);
+          gap: var(--space-sm);
         }
         
         .mode-card {
           background: var(--color-bg-card);
           border: 2px solid rgba(255, 255, 255, 0.05);
           border-radius: var(--radius-lg);
-          padding: var(--space-lg) var(--space-md);
+          padding: var(--space-md) var(--space-sm);
           text-align: center;
           cursor: pointer;
           transition: all var(--transition-normal);
+          -webkit-tap-highlight-color: transparent;
         }
         
-        .mode-card:hover {
+        .mode-card:hover,
+        .mode-card:active {
           background: var(--color-bg-surface);
           border-color: rgba(255, 255, 255, 0.2);
         }
@@ -127,38 +133,42 @@ export class MenuRenderer {
         }
         
         .mode-icon {
-          font-size: 2.5rem;
-          margin-bottom: var(--space-sm);
+          font-size: clamp(1.5rem, 6vw, 2.5rem);
+          margin-bottom: var(--space-xs);
         }
         
         .mode-name {
           font-family: var(--font-display);
           font-weight: 700;
+          font-size: clamp(0.75rem, 3vw, 1rem);
           color: var(--color-text-primary);
-          margin-bottom: var(--space-xs);
+          margin-bottom: 2px;
         }
         
         .mode-desc {
-          font-size: 0.75rem;
+          font-size: clamp(0.65rem, 2.5vw, 0.75rem);
           color: var(--color-text-muted);
         }
         
         .score-selector {
           display: grid;
           grid-template-columns: 1fr 1fr;
-          gap: var(--space-md);
+          gap: var(--space-sm);
         }
         
         .btn-score {
           background: var(--color-bg-card);
           border: 2px solid rgba(255, 255, 255, 0.05);
           border-radius: var(--radius-md);
-          padding: var(--space-md);
+          padding: var(--space-sm) var(--space-md);
           color: var(--color-text-secondary);
+          font-size: clamp(0.8rem, 3vw, 1rem);
           transition: all var(--transition-fast);
+          -webkit-tap-highlight-color: transparent;
         }
         
-        .btn-score:hover {
+        .btn-score:hover,
+        .btn-score:active {
           background: var(--color-bg-surface);
           color: var(--color-text-primary);
         }
@@ -170,9 +180,16 @@ export class MenuRenderer {
         
         .btn-start {
           width: 100%;
-          padding: var(--space-lg);
-          font-size: 1.2rem;
-          margin-top: var(--space-lg);
+          padding: var(--space-md) var(--space-lg);
+          font-size: clamp(1rem, 4vw, 1.2rem);
+          margin-top: var(--space-md);
+          -webkit-tap-highlight-color: transparent;
+        }
+
+        @media (min-height: 700px) {
+          .menu-container {
+            align-items: center;
+          }
         }
       </style>
     `;
