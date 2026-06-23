@@ -1,0 +1,247 @@
+/* ═══════════════════════════════════════════════════════════════
+   cards.css — Estilos Premium para Cartas de Baraja Española
+   Gradientes temáticos por palo, estados y renderizado visual.
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ─── Carta Base ─── */
+.card {
+  position: relative;
+  width: 90px;
+  height: 130px;
+  border-radius: var(--radius-card);
+  background: var(--color-bg-card);
+  border: 2px solid rgba(255, 255, 255, 0.1);
+  box-shadow: var(--shadow-card);
+  cursor: pointer;
+  user-select: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  transition:
+    transform var(--transition-spring),
+    box-shadow var(--transition-normal),
+    border-color var(--transition-normal);
+  overflow: hidden;
+}
+
+.card::before {
+  display: none;
+}
+
+/* ─── Contenido de la Carta ─── */
+.card__number {
+  position: relative;
+  z-index: 1;
+  font-family: var(--font-display);
+  font-size: 1.8rem;
+  font-weight: 800;
+  line-height: 1;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.card__symbol {
+  position: relative;
+  z-index: 1;
+  font-size: 1.6rem;
+  margin-top: 2px;
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.3));
+}
+
+.card__name {
+  position: relative;
+  z-index: 1;
+  font-family: var(--font-body);
+  font-size: 0.55rem;
+  font-weight: 500;
+  color: var(--color-text-secondary);
+  margin-top: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* ─── Colores del número según palo ─── */
+.card[data-palo="oros"] .card__number {
+  color: var(--color-oros-start);
+}
+
+.card[data-palo="copas"] .card__number {
+  color: var(--color-copas-start);
+}
+
+.card[data-palo="espadas"] .card__number {
+  color: var(--color-espadas-start);
+}
+
+.card[data-palo="bastos"] .card__number {
+  color: var(--color-bastos-start);
+}
+
+/* ─── Corner Indicators ─── */
+.card__corner {
+  position: absolute;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0;
+  font-family: var(--font-display);
+  font-weight: 700;
+}
+
+.card__corner--top {
+  top: 6px;
+  left: 7px;
+}
+
+.card__corner--bottom {
+  bottom: 6px;
+  right: 7px;
+  transform: rotate(180deg);
+}
+
+.card__corner-number {
+  font-size: 0.65rem;
+  line-height: 1;
+}
+
+.card__corner-symbol {
+  font-size: 0.6rem;
+  line-height: 1;
+}
+
+.card[data-palo="oros"] .card__corner { color: var(--color-oros-start); }
+.card[data-palo="copas"] .card__corner { color: var(--color-copas-start); }
+.card[data-palo="espadas"] .card__corner { color: var(--color-espadas-start); }
+.card[data-palo="bastos"] .card__corner { color: var(--color-bastos-start); }
+
+/* ─── Hover State ─── */
+.card:hover:not(.card--played):not(.card--disabled) {
+  transform: translateY(-10px) rotate(1.5deg);
+  box-shadow: var(--shadow-xl);
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.card:hover:not(.card--played):not(.card--disabled)::before {
+  opacity: 0.3;
+}
+
+/* ─── Carta Seleccionada ─── */
+.card--selected {
+  transform: translateY(-14px);
+  border-color: var(--color-gold) !important;
+  box-shadow: var(--shadow-glow-gold), var(--shadow-lg);
+}
+
+/* ─── Carta Jugada ─── */
+.card--played {
+  cursor: default;
+  opacity: 0.85;
+}
+
+/* ─── Carta Deshabilitada ─── */
+.card--disabled {
+  cursor: not-allowed;
+  opacity: 0.4;
+  filter: grayscale(0.5);
+}
+
+/* ─── Carta Especial (Perico / Perica) ─── */
+.card--special {
+  border-color: var(--color-gold-dim);
+}
+
+.card--special::after {
+  content: '★';
+  position: absolute;
+  top: 4px;
+  right: 6px;
+  z-index: 2;
+  font-size: 0.7rem;
+  color: var(--color-gold);
+  animation: starPulse 2s ease-in-out infinite;
+}
+
+/* ─── Carta Boca Abajo ─── */
+.card--facedown {
+  border-color: rgba(255, 255, 255, 0.05);
+  cursor: default;
+}
+
+.card--facedown::before {
+  display: none;
+}
+
+.card--facedown .card__number,
+.card--facedown .card__symbol,
+.card--facedown .card__name,
+.card--facedown .card__corner {
+  display: none;
+}
+
+.card--facedown-center {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 1.8rem;
+  opacity: 0.15;
+}
+
+/* ─── Vira ─── */
+.card--vira {
+  transform: rotate(-8deg);
+  box-shadow: 0 0 25px rgba(246, 199, 68, 0.2), var(--shadow-lg);
+  border-color: var(--color-gold-dim);
+}
+
+.card--vira::after {
+  content: 'VIRA';
+  position: absolute;
+  bottom: -22px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-family: var(--font-display);
+  font-size: 0.6rem;
+  font-weight: 700;
+  color: var(--color-gold);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+
+/* ─── Pulse para Estrella ─── */
+@keyframes starPulse {
+  0%, 100% { opacity: 0.7; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.2); }
+}
+
+/* ─── Mano del Jugador ─── */
+.hand {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  padding: var(--space-md);
+  perspective: 800px;
+}
+
+.hand .card {
+  transition: transform var(--transition-spring), box-shadow var(--transition-normal);
+}
+
+/* Fan layout for hand */
+.hand .card:nth-child(1) { transform: rotate(-5deg); }
+.hand .card:nth-child(2) { transform: rotate(0deg); }
+.hand .card:nth-child(3) { transform: rotate(5deg); }
+
+.hand .card:hover:not(.card--disabled) {
+  transform: translateY(-14px) rotate(0deg) !important;
+}
+
+/* ─── Mano de CPU (facedown) ─── */
+.hand--cpu {
+  pointer-events: none;
+}
+
+.hand--cpu .card:nth-child(1) { transform: rotate(5deg); }
+.hand--cpu .card:nth-child(2) { transform: rotate(0deg); }
+.hand--cpu .card:nth-child(3) { transform: rotate(-5deg); }

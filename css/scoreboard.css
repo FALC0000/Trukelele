@@ -1,0 +1,171 @@
+/* ═══════════════════════════════════════════════════════════════
+   scoreboard.css — Marcador de Puntos (Porotos)
+   ═══════════════════════════════════════════════════════════════ */
+
+.scoreboard-panel {
+  width: 320px;
+  background: var(--color-bg-medium);
+  border-left: 1px solid rgba(255, 255, 255, 0.05);
+  display: flex;
+  flex-direction: column;
+  z-index: 30;
+  box-shadow: -5px 0 20px rgba(0, 0, 0, 0.5);
+}
+
+.scoreboard-header {
+  padding: var(--space-lg);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.scoreboard-title {
+  font-size: 1.2rem;
+  color: var(--color-gold);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+
+.scoreboard-target {
+  font-size: 0.8rem;
+  color: var(--color-text-muted);
+  background: rgba(255, 255, 255, 0.05);
+  padding: 2px 8px;
+  border-radius: var(--radius-sm);
+}
+
+.scoreboard-teams {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  padding: var(--space-md);
+  gap: var(--space-xl);
+  overflow-y: auto;
+}
+
+.team-score {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.team-score__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  padding-bottom: var(--space-xs);
+  border-bottom: 1px dashed rgba(255, 255, 255, 0.1);
+}
+
+.team-score__name {
+  font-family: var(--font-display);
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+.team-score__points {
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: var(--color-gold);
+}
+
+/* ─── Representación visual de fósforos/porotos ─── */
+.tally-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-md);
+  margin-top: var(--space-sm);
+}
+
+.tally-group {
+  position: relative;
+  width: 40px;
+  height: 40px;
+}
+
+/* Líneas del fósforo */
+.tally-line {
+  position: absolute;
+  background: #d4a373; /* color madera */
+  border-radius: 2px;
+  box-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+}
+
+/* Cabeza roja del fósforo */
+.tally-line::after {
+  content: '';
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  background: var(--color-accent-red);
+  border-radius: 50%;
+  top: -2px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.tally-line--1 { width: 4px; height: 35px; left: 5px; top: 0; transform: rotate(-5deg); }
+.tally-line--2 { width: 4px; height: 35px; left: 15px; top: 2px; transform: rotate(2deg); }
+.tally-line--3 { width: 4px; height: 35px; left: 25px; top: 0; transform: rotate(8deg); }
+.tally-line--4 { width: 4px; height: 35px; left: 35px; top: -2px; transform: rotate(-3deg); }
+.tally-line--5 { 
+  width: 4px; 
+  height: 45px; 
+  left: 20px; 
+  top: -5px; 
+  transform: rotate(70deg); 
+  z-index: 2;
+}
+
+/* Separador a la mitad (12 puntos si se juega a 24) */
+.tally-divider {
+  width: 100%;
+  height: 1px;
+  background: rgba(255, 255, 255, 0.1);
+  margin: var(--space-xs) 0;
+  position: relative;
+}
+
+.tally-divider::after {
+  content: 'MALAS';
+  position: absolute;
+  right: 0;
+  top: -8px;
+  font-size: 0.6rem;
+  color: var(--color-text-muted);
+  background: var(--color-bg-medium);
+  padding-left: 5px;
+}
+
+.tally-container--buenas .tally-divider::after {
+  content: 'BUENAS';
+}
+
+/* ─── Historial de jugadas ─── */
+.history-panel {
+  height: 150px;
+  background: rgba(0, 0, 0, 0.2);
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  padding: var(--space-md);
+  overflow-y: auto;
+  font-size: 0.8rem;
+}
+
+.history-item {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: var(--space-xs);
+  color: var(--color-text-secondary);
+}
+
+.history-item__team {
+  font-weight: 600;
+  color: var(--color-text-primary);
+}
+
+.history-item__points {
+  color: var(--color-gold);
+  font-weight: 700;
+}

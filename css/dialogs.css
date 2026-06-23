@@ -1,0 +1,178 @@
+/* ═══════════════════════════════════════════════════════════════
+   dialogs.css — Modales de Cantos y Resultados
+   ═══════════════════════════════════════════════════════════════ */
+
+.dialog-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+  display: flex;
+  align-items: flex-start;
+  padding-top: 15vh;
+  justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--transition-normal);
+}
+
+.dialog-overlay.is-active {
+  opacity: 1;
+  pointer-events: all;
+}
+
+.dialog-box {
+  background: var(--color-bg-card);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: var(--radius-xl);
+  padding: var(--space-xl);
+  max-width: 450px;
+  width: 90%;
+  box-shadow: var(--shadow-xl), 0 0 40px rgba(0, 0, 0, 0.5);
+  transform: scale(0.9) translateY(20px);
+  transition: transform var(--transition-spring);
+  text-align: center;
+}
+
+.dialog-overlay.is-active .dialog-box {
+  transform: scale(1) translateY(0);
+}
+
+/* ─── Canto Alert (speech bubble style) ─── */
+.canto-alert {
+  background: var(--color-bg-surface);
+  border: 1px solid var(--color-gold-dim);
+  border-radius: var(--radius-lg);
+  padding: var(--space-md) var(--space-lg);
+  margin-bottom: var(--space-lg);
+  position: relative;
+  box-shadow: var(--shadow-glow-gold);
+}
+
+.canto-alert::after {
+  content: '';
+  position: absolute;
+  bottom: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  border-width: 10px 10px 0;
+  border-style: solid;
+  border-color: var(--color-bg-surface) transparent transparent;
+  z-index: 2;
+}
+
+.canto-alert::before {
+  content: '';
+  position: absolute;
+  bottom: -11px;
+  left: 50%;
+  transform: translateX(-50%);
+  border-width: 11px 11px 0;
+  border-style: solid;
+  border-color: var(--color-gold-dim) transparent transparent;
+  z-index: 1;
+}
+
+.canto-caller {
+  font-size: 0.8rem;
+  color: var(--color-text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: var(--space-xs);
+}
+
+.canto-text {
+  font-family: var(--font-display);
+  font-size: 1.8rem;
+  font-weight: 800;
+  color: var(--color-gold);
+  line-height: 1.2;
+}
+
+/* ─── Actions Grid ─── */
+.dialog-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-md);
+  margin-top: var(--space-lg);
+}
+
+.dialog-actions--full {
+  grid-template-columns: 1fr;
+}
+
+.btn-dialog {
+  padding: var(--space-md);
+  border-radius: var(--radius-md);
+  font-size: 1rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  transition: all var(--transition-fast);
+}
+
+.btn-dialog--accept {
+  background: var(--color-accent-green);
+  color: white;
+}
+
+.btn-dialog--accept:hover {
+  background: #3b8766;
+  transform: translateY(-2px);
+}
+
+.btn-dialog--reject {
+  background: var(--color-accent-red);
+  color: white;
+}
+
+.btn-dialog--reject:hover {
+  background: #d62828;
+  transform: translateY(-2px);
+}
+
+.btn-dialog--raise {
+  background: transparent;
+  border: 2px solid var(--color-gold);
+  color: var(--color-gold);
+}
+
+.btn-dialog--raise:hover {
+  background: rgba(246, 199, 68, 0.1);
+  transform: translateY(-2px);
+}
+
+/* ─── Round End Result ─── */
+.result-title {
+  font-family: var(--font-display);
+  font-size: 2.2rem;
+  color: var(--color-gold);
+  margin-bottom: var(--space-sm);
+}
+
+.result-subtitle {
+  font-size: 1.1rem;
+  color: var(--color-text-secondary);
+  margin-bottom: var(--space-lg);
+}
+
+.result-points {
+  font-size: 3rem;
+  font-weight: 800;
+  font-family: var(--font-display);
+  color: var(--color-text-primary);
+  margin: var(--space-lg) 0;
+  text-shadow: 0 4px 10px rgba(0,0,0,0.5);
+}
+
+.result-points span {
+  font-size: 1.2rem;
+  color: var(--color-text-muted);
+  font-weight: 500;
+}
+
+/* ─── Round Summary ─── */
+.round-summary {
+  background: var(--color-bg-dark);
+  border-color: var(--color-gold);
+}

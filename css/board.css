@@ -1,0 +1,337 @@
+/* ═══════════════════════════════════════════════════════════════
+   board.css — Mesa de Juego
+   Layout principal de la partida.
+   ═══════════════════════════════════════════════════════════════ */
+
+.board-container {
+  display: flex;
+  flex-grow: 1;
+  height: 100vh;
+  background: var(--color-bg-dark);
+}
+
+.table-area {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  background: var(--color-table-felt);
+  box-shadow: inset 0 0 100px rgba(0, 0, 0, 0.7);
+  overflow: hidden;
+}
+
+/* ─── Player Areas ─── */
+.player-area {
+  padding: var(--space-md);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+}
+
+.player-area--top {
+  height: 25%;
+  justify-content: flex-start;
+  padding-top: var(--space-lg);
+}
+
+.player-area--bottom {
+  height: 35%;
+  justify-content: flex-end;
+  padding-bottom: var(--space-xl);
+}
+
+.player-info {
+  background: var(--glass-bg);
+  backdrop-filter: var(--glass-blur);
+  border: 1px solid var(--glass-border);
+  padding: var(--space-xs) var(--space-md);
+  border-radius: var(--radius-xl);
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  margin-bottom: var(--space-sm);
+  box-shadow: var(--shadow-md);
+}
+
+.player-area--top .player-info {
+  margin-bottom: 0;
+  margin-top: var(--space-sm);
+}
+
+.player-name {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: var(--color-text-primary);
+}
+
+.player-status {
+  font-size: 0.7rem;
+  color: var(--color-gold);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-weight: 700;
+}
+
+/* ─── Center Play Area ─── */
+.play-area {
+  flex-grow: 1;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 5;
+}
+
+.play-zone {
+  position: relative;
+  width: 300px;
+  height: 200px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Posiciones de cartas jugadas */
+.played-card {
+  position: absolute;
+  transition: all var(--transition-spring);
+}
+
+.played-card--p1 { /* bottom player */
+  bottom: 10%;
+  left: 50%;
+  transform: translateX(calc(-50% + var(--rand-x, 0px))) translateY(var(--rand-y, 0px)) rotate(calc(-5deg + var(--rand-r, 0deg)));
+  z-index: 2;
+}
+
+.played-card--p2 { /* top player */
+  top: 10%;
+  left: 50%;
+  transform: translateX(calc(-50% + var(--rand-x, 0px))) translateY(var(--rand-y, 0px)) rotate(calc(5deg + var(--rand-r, 0deg)));
+  z-index: 1;
+}
+
+.played-card--p3 { /* left player (2v2) */
+  left: 10%;
+  top: 50%;
+  transform: translateX(var(--rand-x, 0px)) translateY(calc(-50% + var(--rand-y, 0px))) rotate(calc(85deg + var(--rand-r, 0deg)));
+  z-index: 1;
+}
+
+.played-card--p4 { /* right player (2v2) */
+  right: 10%;
+  top: 50%;
+  transform: translateX(var(--rand-x, 0px)) translateY(calc(-50% + var(--rand-y, 0px))) rotate(calc(-85deg + var(--rand-r, 0deg)));
+  z-index: 1;
+}
+
+/* Historial de bazas (cartas recogidas) */
+.baza-history {
+  position: absolute;
+  left: var(--space-lg);
+  bottom: 100px;
+  background: var(--glass-bg);
+  backdrop-filter: var(--glass-blur);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-md);
+  padding: var(--space-sm);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+  z-index: 10;
+  box-shadow: var(--shadow-md);
+}
+
+.baza-history__title {
+  font-family: var(--font-display);
+  font-size: 0.65rem;
+  color: var(--color-gold);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-weight: 800;
+  text-align: center;
+}
+
+.baza-history__list {
+  display: flex;
+  gap: var(--space-sm);
+}
+
+.baza-history-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+
+.baza-history-item__label {
+  font-size: 0.6rem;
+  color: var(--color-text-secondary);
+}
+
+.baza-history-item__cards {
+  display: flex;
+  gap: 2px;
+}
+
+.baza-mini-card {
+  width: 28px;
+  height: 38px;
+  border-radius: var(--radius-sm);
+  font-size: 0.55rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: var(--color-bg-card);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  font-weight: 700;
+  color: var(--color-text-primary);
+}
+
+.baza-mini-card[data-palo="oros"] { color: var(--color-oros-start); }
+.baza-mini-card[data-palo="copas"] { color: var(--color-copas-start); }
+.baza-mini-card[data-palo="espadas"] { color: var(--color-espadas-start); }
+.baza-mini-card[data-palo="bastos"] { color: var(--color-bastos-start); }
+
+.baza-mini-card--winner {
+  border-color: var(--color-gold);
+  box-shadow: var(--shadow-glow-gold);
+}
+
+/* ─── Vira Area ─── */
+.vira-container {
+  position: absolute;
+  right: var(--space-xl);
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-md);
+}
+
+.deck-stack {
+  position: relative;
+  width: 90px;
+  height: 130px;
+}
+
+.deck-card {
+  position: absolute;
+  top: 0;
+  left: 0;
+  box-shadow: -2px 2px 5px rgba(0,0,0,0.4);
+}
+
+.deck-card:nth-child(1) { transform: translate(-2px, -2px); }
+.deck-card:nth-child(2) { transform: translate(-4px, -4px); }
+.deck-card:nth-child(3) { transform: translate(-6px, -6px); }
+
+.vira-slot {
+  position: absolute;
+  left: -60px;
+  top: 0;
+}
+
+/* ─── Control Bar (Bottom) ─── */
+.control-bar {
+  position: absolute;
+  bottom: var(--space-md);
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: var(--space-sm);
+  z-index: 20;
+}
+
+.btn-action {
+  background: var(--glass-bg);
+  backdrop-filter: var(--glass-blur);
+  border: 1px solid var(--glass-border);
+  color: var(--color-text-primary);
+  padding: var(--space-sm) var(--space-lg);
+  border-radius: var(--radius-xl);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-size: 0.8rem;
+  transition: all var(--transition-fast);
+  box-shadow: var(--shadow-md);
+}
+
+.btn-action:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.1);
+  transform: translateY(-2px);
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.btn-action:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.btn-action:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.btn-action--primary {
+  background: var(--color-gold);
+  color: var(--color-bg-dark);
+  border: none;
+}
+
+.btn-action--primary:hover:not(:disabled) {
+  background: var(--color-gold-dim);
+  box-shadow: var(--shadow-glow-gold);
+}
+
+.btn-action--danger:hover:not(:disabled) {
+  background: #d62828;
+}
+
+.btn-action[data-action="fold_hand"] {
+  background: var(--color-bg-surface);
+  color: var(--color-text-secondary);
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+.btn-action[data-action="fold_hand"]:hover:not(:disabled) {
+  color: var(--color-accent-red);
+  border-color: var(--color-accent-red);
+}
+
+/* ─── Turn Transition Overlay (1v1 Local) ─── */
+.turn-transition {
+  position: absolute;
+  inset: 0;
+  background: rgba(10, 15, 26, 0.95);
+  backdrop-filter: blur(10px);
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-lg);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--transition-normal);
+}
+
+.turn-transition.is-active {
+  opacity: 1;
+  pointer-events: all;
+}
+
+.turn-transition__title {
+  font-size: 2rem;
+  color: var(--color-gold);
+}
+
+.turn-transition__text {
+  font-size: 1.2rem;
+  color: var(--color-text-secondary);
+}

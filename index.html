@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Trukelele - Truco Venezolano</title>
+  
+  <!-- SEO Meta Tags -->
+  <meta name="description" content="Juega al Truco Venezolano contra la inteligencia artificial o con amigos. El juego tradicional con diseño premium.">
+  <meta name="keywords" content="truco, venezolano, cartas, juego, baraja española, trukelele">
+  
+  <!-- CSS -->
+  <link rel="stylesheet" href="./css/index.css">
+  <link rel="stylesheet" href="./css/cards.css">
+  <link rel="stylesheet" href="./css/board.css">
+  <link rel="stylesheet" href="./css/scoreboard.css">
+  <link rel="stylesheet" href="./css/dialogs.css">
+  <link rel="stylesheet" href="./css/animations.css">
+
+  <!-- PeerJS para WebRTC P2P -->
+  <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
+</head>
+<body>
+
+  <!-- Contenedor del Menú de Inicio -->
+  <div id="menu-container"></div>
+
+  <!-- Contenedor Principal del Juego -->
+  <main class="board-container" id="board-container">
+    <!-- El tablero (mesa y jugadores) se renderiza aquí -->
+  </main>
+
+  <!-- Barra de Controles (Truco, Envido, etc) -->
+  <div class="control-bar" id="control-bar">
+    <!-- Botones generados dinámicamente -->
+  </div>
+
+  <!-- Marcador Lateral -->
+  <aside id="scoreboard-container">
+    <!-- Marcador renderizado aquí -->
+  </aside>
+
+  <!-- JS Entry Point -->
+  <script type="module" src="./js/app.js"></script>
+</body>
+</html>

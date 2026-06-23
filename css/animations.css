@@ -1,0 +1,104 @@
+/* ═══════════════════════════════════════════════════════════════
+   animations.css — Micro-animaciones y Transiciones
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ─── Repartir Cartas (Deal) ─── */
+@keyframes dealCard {
+  0% {
+    transform: translate(300px, -200px) scale(0.5) rotate(180deg);
+    opacity: 0;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    transform: translate(0, 0) scale(1) rotate(0deg);
+    opacity: 1;
+  }
+}
+
+.anim-deal {
+  animation: dealCard 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+/* Retrasos secuenciales para repartir */
+.anim-deal-1 { animation-delay: 0.1s; opacity: 0; }
+.anim-deal-2 { animation-delay: 0.25s; opacity: 0; }
+.anim-deal-3 { animation-delay: 0.4s; opacity: 0; }
+
+/* ─── Jugar Carta ─── */
+@keyframes playCard {
+  0% {
+    transform: translateY(0) scale(1);
+  }
+  50% {
+    transform: translateY(-50px) scale(1.1);
+    z-index: 100;
+  }
+  100% {
+    transform: translate(var(--target-x), var(--target-y)) rotate(var(--target-r)) scale(1);
+  }
+}
+
+.anim-play {
+  animation: playCard 0.5s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+  pointer-events: none;
+}
+
+/* ─── Recoger Baza (Win/Lose) ─── */
+@keyframes sweepBazaP1 {
+  0% { transform: scale(1); opacity: 1; }
+  100% { transform: translate(-200px, 300px) scale(0.5) rotate(-45deg); opacity: 0; }
+}
+
+@keyframes sweepBazaP2 {
+  0% { transform: scale(1); opacity: 1; }
+  100% { transform: translate(200px, -300px) scale(0.5) rotate(45deg); opacity: 0; }
+}
+
+.anim-sweep-p1 {
+  animation: sweepBazaP1 0.6s ease-in forwards;
+}
+
+.anim-sweep-p2 {
+  animation: sweepBazaP2 0.6s ease-in forwards;
+}
+
+/* ─── Puntos Ganados (Score) ─── */
+@keyframes scorePop {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.3); color: var(--color-gold); text-shadow: var(--shadow-glow-gold); }
+  100% { transform: scale(1); }
+}
+
+.anim-score-pop {
+  animation: scorePop 0.5s ease forwards;
+}
+
+/* ─── Cantos (Dialogs) ─── */
+@keyframes dialogPopIn {
+  0% { opacity: 0; transform: scale(0.8) translateY(20px); }
+  100% { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+/* ─── Indicador de Turno ─── */
+@keyframes pulseTurn {
+  0% { box-shadow: 0 0 0 0 rgba(246, 199, 68, 0.4); }
+  70% { box-shadow: 0 0 0 10px rgba(246, 199, 68, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(246, 199, 68, 0); }
+}
+
+.is-turn .player-info {
+  border-color: var(--color-gold);
+  animation: pulseTurn 2s infinite;
+}
+
+/* ─── Fade general ─── */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.anim-fade-in {
+  animation: fadeIn 0.3s ease forwards;
+}
