@@ -6,12 +6,13 @@
 export class NetworkManager {
   constructor() {
     this.peer = null;
-    this.connection = null; // En Guest: conexión al Host. En Host: conexión al Guest (1v1)
+    this.connections = []; // Array de conexiones (Host usa varias, Guest usa una)
     
     this.isHost = false;
     
     // Callbacks
-    this.onConnected = null;
+    this.onConnected = null; // Para Guest
+    this.onClientConnected = null; // Para Host: (conn, playerIndex) => void
     this.onDisconnected = null;
     this.onError = null;
     this.onMessage = null; // Función que procesará mensajes entrantes
@@ -23,11 +24,11 @@ export class NetworkManager {
    */
   hostRoom(onRoomCreated) {
     this.isHost = true;
+    this.connections = [];
     
     // Generamos un ID corto para la sala
     const roomId = this._generateShortId();
     
-    // Conectar a PeerJS usando el roomId corto (puede haber colisión, pero es para simplificar)
     this.peer = new Peer(roomId);
 
     this.peer.on('open', (id) => {
@@ -37,17 +38,24 @@ export class NetworkManager {
 
     this.peer.on('connection', (conn) => {
       console.log('¡Un jugador se ha conectado!');
-      this.connection = conn;
       
-      this.connection.on('open', () => {
-        if (this.onConnected) this.onConnected();
+      conn.on('open', () => {
+        this.connections.push(conn);
+        // El Host es el index 0. Los clientes son 1, 2, 3...
+        const playerIndex = this.connections.length;
+        
+        // Enviarle su índice
+        conn.send({ type: 'ASSIGN_INDEX', payload: playerIndex });
+        
+        if (this.onClientConnected) this.onClientConnected(conn, playerIndex);
       });
 
-      this.connection.on('data', (data) => {
-        if (this.onMessage) this.onMessage(data);
+      conn.on('data', (data) => {
+        if (this.onMessage) this.onMessage(data, conn);
       });
       
-      this.connection.on('close', () => {
+      conn.on('close', () => {
+        this.connections = this.connections.filter(c => c !== conn);
         if (this.onDisconnected) this.onDisconnected();
       });
     });
@@ -63,22 +71,30 @@ export class NetworkManager {
    */
   joinRoom(roomId) {
     this.isHost = false;
+    this.connections = [];
     this.peer = new Peer(); // ID aleatorio para el cliente
 
     this.peer.on('open', (id) => {
       console.log('Cliente inicializado. Conectando a sala:', roomId);
-      this.connection = this.peer.connect(roomId);
-
-      this.connection.on('open', () => {
+      const conn = this.peer.connect(roomId);
+      
+      conn.on('open', () => {
         console.log('¡Conectado a la sala!');
-        if (this.onConnected) this.onConnected();
+        this.connections.push(conn);
+        // Nota: onConnected se disparará cuando recibamos el ASSIGN_INDEX para tener el playerIndex listo
       });
 
-      this.connection.on('data', (data) => {
-        if (this.onMessage) this.onMessage(data);
+      conn.on('data', (data) => {
+        // Capturar la asignación de índice internamente
+        if (data.type === 'ASSIGN_INDEX') {
+          this.localPlayerIndex = data.payload;
+          if (this.onConnected) this.onConnected(this.localPlayerIndex);
+        } else {
+          if (this.onMessage) this.onMessage(data, conn);
+        }
       });
 
-      this.connection.on('close', () => {
+      conn.on('close', () => {
         if (this.onDisconnected) this.onDisconnected();
       });
     });
@@ -89,18 +105,33 @@ export class NetworkManager {
   }
 
   /**
-   * Envía un mensaje a través de la conexión.
+   * Envía un mensaje a todos los pares conectados.
    */
   sendMessage(type, payload) {
-    if (!this.connection || !this.connection.open) return;
-    this.connection.send({ type, payload });
+    this.connections.forEach(conn => {
+      if (conn.open) {
+        conn.send({ type, payload });
+      }
+    });
+  }
+
+  /**
+   * Envía un mensaje a un cliente específico (solo Host).
+   */
+  sendMessageTo(playerIndex, type, payload) {
+    if (!this.isHost) return;
+    const connIndex = playerIndex - 1; // playerIndex 1 está en this.connections[0]
+    if (this.connections[connIndex] && this.connections[connIndex].open) {
+      this.connections[connIndex].send({ type, payload });
+    }
   }
 
   /**
    * Cierra la conexión.
    */
   disconnect() {
-    if (this.connection) this.connection.close();
+    this.connections.forEach(c => c.close());
+    this.connections = [];
     if (this.peer) this.peer.destroy();
   }
 

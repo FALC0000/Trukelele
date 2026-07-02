@@ -12,18 +12,19 @@ export class ClientEngineProxy {
    */
   constructor(network) {
     this.network = network;
+    this.localPlayerIndex = network.localPlayerIndex || 1;
     
     // Objeto mock para que UIRenderer no falle (necesita config y getGameState)
     this.config = {
       targetScore: 24,
-      teamNames: ['Nosotros', 'Ellos'],
+      teamNames: ['Equipo 1', 'Equipo 2'],
       isHuman: () => true,
       getPlayerTeam: (idx) => idx % 2 === 0 ? 'team1' : 'team2'
     };
     
     this.latestState = {
       state: 'WAITING_PLAY',
-      currentTurn: 'cpu', // El Guest (Player 2) espera al Host primero
+      currentTurn: 'cpu', // Se sobrescribe por la red
       players: [],
       scores: { team1: 0, team2: 0 },
       vira: null,
@@ -41,10 +42,14 @@ export class ClientEngineProxy {
     this._localHand = [];
 
     // Array de players mock con getHand() para compatibilidad con UIRenderer
-    this.players = [
-      { name: 'Host', getHand: () => [], cardsRemaining: 0 },
-      { name: 'Tú', getHand: () => this._localHand, cardsRemaining: this._localHand.length }
-    ];
+    this.players = [];
+    for (let i = 0; i < 4; i++) {
+      this.players.push({
+        name: i === 0 ? 'Host' : `Jugador ${i+1}`,
+        getHand: i === this.localPlayerIndex ? () => this._localHand : () => [],
+        cardsRemaining: 0
+      });
+    }
 
     // Callbacks de UI
     this.onStateChange = null;
@@ -118,12 +123,13 @@ export class ClientEngineProxy {
    * Actualiza el array de players mock con la mano actual.
    */
   _syncPlayersHand() {
-    this.players[1] = {
-      ...this.players[1],
-      name: this.players[1].name,
-      getHand: () => this._localHand,
-      cardsRemaining: this._localHand.length
-    };
+    if (this.players[this.localPlayerIndex]) {
+      this.players[this.localPlayerIndex] = {
+        ...this.players[this.localPlayerIndex],
+        getHand: () => this._localHand,
+        cardsRemaining: this._localHand.length
+      };
+    }
   }
 
   // ─────────────── MANEJO DE MENSAJES (Network -> Proxy -> UI) ───────────────
@@ -155,20 +161,32 @@ export class ClientEngineProxy {
       this.config = { ...this.config, ...payload };
       // Restauramos las funciones mock
       this.config.isHuman = () => true;
-      this.config.getPlayerTeam = (idx) => idx % 2 === 0 ? 'team1' : 'team2';
+      
+      // En modo ONLINE_2V2, teams cruzados: 0 y 2 -> team1; 1 y 3 -> team2
+      // En modo ONLINE_1V1, team1: 0; team2: 1
+      this.config.getPlayerTeam = (idx) => {
+        if (this.config.mode === 'online_2v2') {
+          return (idx === 0 || idx === 2) ? 'team1' : 'team2';
+        }
+        return idx % 2 === 0 ? 'team1' : 'team2';
+      };
       return;
     }
 
     if (type === 'SYNC_STATE') {
       this.latestState = payload;
-      // Sincronizar cardsRemaining del player 0 (Host) desde el estado
-      if (payload.players && payload.players[0]) {
-        this.players[0] = {
-          ...this.players[0],
-          name: payload.players[0].name,
-          cardsRemaining: payload.players[0].cardsRemaining,
-          getHand: () => []
-        };
+      // Sincronizar cardsRemaining de todos los jugadores desde el estado
+      if (payload.players) {
+        payload.players.forEach(p => {
+           if (p.index !== this.localPlayerIndex) {
+             this.players[p.index] = {
+               ...this.players[p.index],
+               name: p.name,
+               cardsRemaining: p.cardsRemaining,
+               getHand: () => []
+             };
+           }
+        });
       }
       return;
     }
@@ -177,30 +195,24 @@ export class ClientEngineProxy {
     if (type === 'EVENT') {
       const { eventName, eventData } = payload;
 
-      // Interceptar onRoundStart para extraer la mano del Guest (player index 1)
+      // Interceptar onRoundStart para extraer la mano del cliente local
       if (eventName === 'onRoundStart') {
         if (eventData && eventData.players) {
-          const guestPlayerData = eventData.players.find(p => p.index === 1);
-          if (guestPlayerData && guestPlayerData.hand) {
-            this._localHand = guestPlayerData.hand;
+          const myPlayerData = eventData.players.find(p => p.index === this.localPlayerIndex);
+          if (myPlayerData && myPlayerData.hand) {
+            this._localHand = myPlayerData.hand;
             this._syncPlayersHand();
-            // Actualizar nombres
-            if (eventData.players[0]) {
-              this.players[0] = {
-                ...this.players[0],
-                name: eventData.players[0].name,
-                getHand: () => []
-              };
-            }
-            if (eventData.players[1]) {
-              this.players[1] = {
-                ...this.players[1],
-                name: eventData.players[1].name,
-                getHand: () => this._localHand,
-                cardsRemaining: this._localHand.length
-              };
-            }
           }
+          
+          // Actualizar nombres y cartas
+          eventData.players.forEach(p => {
+             this.players[p.index] = {
+               ...this.players[p.index],
+               name: p.name,
+               cardsRemaining: p.index === this.localPlayerIndex ? this._localHand.length : 3, // Inicia con 3 cartas
+               getHand: p.index === this.localPlayerIndex ? () => this._localHand : () => []
+             };
+          });
         }
         if (this.onRoundStart) this.onRoundStart(eventData);
         return;
@@ -208,8 +220,6 @@ export class ClientEngineProxy {
 
       // Interceptar onCardPlayed para actualizar mano local si el Guest jugó
       if (eventName === 'onCardPlayed') {
-        // El Guest es playerIndex=1; si el Host jugó (index=0), no tocamos la mano
-        // (ya la quitamos en playCard() cuando el Guest juega)
         if (this.onCardPlayed) this.onCardPlayed(eventData);
         return;
       }

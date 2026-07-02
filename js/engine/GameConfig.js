@@ -5,30 +5,26 @@
 
 export const GameMode = {
   VS_CPU: 'vs_cpu',      // 1 humano vs 1 CPU
-  LOCAL_1V1: '1v1',      // 2 humanos en la misma pantalla
-  TEAMS_2V2: '2v2',      // 2 equipos de 2 jugadores
-  ONLINE_PVP: 'online_pvp', // 1 humano local vs 1 remoto por red
+  ONLINE_1V1: 'online_1v1', // 1 humano local vs 1 remoto por red
+  ONLINE_2V2: 'online_2v2', // 2 equipos de 2 jugadores por red
 };
 
 export const GameModeLabels = {
   [GameMode.VS_CPU]: 'vs CPU',
-  [GameMode.LOCAL_1V1]: '1 vs 1 Local',
-  [GameMode.TEAMS_2V2]: '2 vs 2 Equipos',
-  [GameMode.ONLINE_PVP]: 'Online P2P',
+  [GameMode.ONLINE_1V1]: '1v1 Online',
+  [GameMode.ONLINE_2V2]: '2v2 Online',
 };
 
 export const GameModeDescriptions = {
   [GameMode.VS_CPU]: 'Juega contra la inteligencia artificial',
-  [GameMode.LOCAL_1V1]: 'Dos jugadores en la misma pantalla',
-  [GameMode.TEAMS_2V2]: 'Dos equipos de dos jugadores',
-  [GameMode.ONLINE_PVP]: 'Juega contra un amigo por internet',
+  [GameMode.ONLINE_1V1]: 'Juega contra un amigo por internet',
+  [GameMode.ONLINE_2V2]: 'Dos equipos de dos jugadores por internet',
 };
 
 export const GameModeIcons = {
   [GameMode.VS_CPU]: '🤖',
-  [GameMode.LOCAL_1V1]: '👥',
-  [GameMode.TEAMS_2V2]: '👥👥',
-  [GameMode.ONLINE_PVP]: '🌐',
+  [GameMode.ONLINE_1V1]: '🌐',
+  [GameMode.ONLINE_2V2]: '🌍',
 };
 
 export class GameConfig {
@@ -56,7 +52,7 @@ export class GameConfig {
         };
         break;
 
-      case GameMode.LOCAL_1V1:
+      case GameMode.ONLINE_1V1:
         this.playerNames = [
           playerNames[0] || 'Jugador 1',
           playerNames[1] || 'Jugador 2'
@@ -68,22 +64,23 @@ export class GameConfig {
         };
         break;
 
-      case GameMode.TEAMS_2V2:
+      case GameMode.ONLINE_2V2:
         this.playerNames = [
           playerNames[0] || 'Jugador 1',
-          playerNames[1] || 'Compañero (CPU)',
-          playerNames[2] || 'Rival 1 (CPU)',
-          playerNames[3] || 'Rival 2 (CPU)'
+          playerNames[1] || 'Jugador 2',
+          playerNames[2] || 'Jugador 3',
+          playerNames[3] || 'Jugador 4'
         ];
-        this.teamNames = ['Tu Equipo', 'Equipo Rival'];
+        this.teamNames = ['Equipo 1', 'Equipo 2'];
+        // Equipos cruzados: 0 y 2 en team1, 1 y 3 en team2
         this.teamComposition = {
           team1: [
             { name: this.playerNames[0], type: 'human', index: 0 },
-            { name: this.playerNames[1], type: 'cpu', index: 1 },
+            { name: this.playerNames[2], type: 'human', index: 2 },
           ],
           team2: [
-            { name: this.playerNames[2], type: 'cpu', index: 2 },
-            { name: this.playerNames[3], type: 'cpu', index: 3 },
+            { name: this.playerNames[1], type: 'human', index: 1 },
+            { name: this.playerNames[3], type: 'human', index: 3 },
           ],
         };
         break;
@@ -96,10 +93,11 @@ export class GameConfig {
 
   /**
    * Verifica si el modo requiere pantalla de transición entre turnos humanos.
+   * Al eliminar los modos locales multijugador, esto siempre es false.
    * @returns {boolean}
    */
   needsTurnTransition() {
-    return this.mode === GameMode.LOCAL_1V1;
+    return false;
   }
 
   /**
@@ -107,7 +105,7 @@ export class GameConfig {
    * @returns {boolean}
    */
   isTeamMode() {
-    return this.mode === GameMode.TEAMS_2V2;
+    return this.mode === GameMode.ONLINE_2V2;
   }
 
   /**
@@ -124,7 +122,7 @@ export class GameConfig {
    * @returns {number}
    */
   getTotalPlayers() {
-    return this.mode === GameMode.TEAMS_2V2 ? 4 : 2;
+    return this.mode === GameMode.ONLINE_2V2 ? 4 : 2;
   }
 
   /**

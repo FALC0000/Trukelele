@@ -31,9 +31,8 @@ export class MenuRenderer {
             <h2 class="menu-section-title">Modo de Juego</h2>
             <div class="mode-selector">
               ${this._createModeOption(GameMode.VS_CPU)}
-              ${this._createModeOption(GameMode.LOCAL_1V1)}
-              ${this._createModeOption(GameMode.TEAMS_2V2)}
-              ${this._createModeOption(GameMode.ONLINE_PVP)}
+              ${this._createModeOption(GameMode.ONLINE_1V1)}
+              ${this._createModeOption(GameMode.ONLINE_2V2)}
             </div>
           </div>
 
@@ -233,12 +232,12 @@ export class MenuRenderer {
     `;
   }
 
-  showNetworkOptions(onHost, onJoin) {
+  showNetworkOptions(onHost, onJoin, is2v2 = false) {
     this.container.innerHTML = `
       <div class="menu-container">
         <div class="menu-content" style="text-align: center;">
-          <h2 class="menu-title" style="font-size: 2.5rem;">Modo Online P2P</h2>
-          <p class="menu-subtitle" style="margin-bottom: 2rem;">Juega contra un amigo a distancia</p>
+          <h2 class="menu-title" style="font-size: 2.5rem;">Modo Online ${is2v2 ? '2v2' : '1v1'}</h2>
+          <p class="menu-subtitle" style="margin-bottom: 2rem;">Juega contra amigos a distancia</p>
           
           <div style="display: flex; flex-direction: column; gap: 20px; align-items: center;">
             <button class="btn-action btn-action--primary" id="btn-host" style="width: 100%; max-width: 300px;">
