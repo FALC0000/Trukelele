@@ -61,6 +61,7 @@ export class UIRenderer {
         const localHand = localPlayerObj && typeof localPlayerObj.getHand === 'function'
           ? localPlayerObj.getHand()
           : [];
+        // Re-renderizar mano local con vira correcta
         if (localHand.length > 0 && this.board.elements && this.board.elements.p1Hand) {
           this.board.renderLocalHand(localHand, state.vira, this.handleCardClick.bind(this));
         }
@@ -71,6 +72,19 @@ export class UIRenderer {
           const p2Cards = opponentData ? opponentData.cardsRemaining
             : (this.engine.players && this.engine.players[opponentIdx] ? this.engine.players[opponentIdx].cardsRemaining : 0);
           this.board.renderOpponentHand(p2Cards || 0);
+        }
+        // CRÍTICO: Actualizar controles con las acciones disponibles del SYNC_STATE recién llegado.
+        // handleStateChange llega ANTES del SYNC_STATE, por lo que ve availableActions obsoletas.
+        // Este es el único lugar donde los botones de canto (Truco, Envido) se muestran correctamente.
+        this.updateControls();
+        // Habilitar/deshabilitar cartas según el turno actual
+        if (state.state && this.board.elements) {
+          const currentTurnTeam = state.currentTurn === 'player' ? 'team1' : 'team2';
+          const myTeam = this.engine.getPlayerTeam ? this.engine.getPlayerTeam(this.localViewIndex)
+            : (this.localViewIndex % 2 === 0 ? 'team1' : 'team2');
+          this.board.setCardsEnabled(
+            state.state === 'WAITING_PLAY' && currentTurnTeam === myTeam
+          );
         }
       };
     }

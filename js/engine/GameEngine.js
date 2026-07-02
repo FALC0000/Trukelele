@@ -1075,25 +1075,29 @@ export class GameEngine {
         actions.push('play_card');
       }
 
-      // Envido solo en primera baza
-      if (!this.envidoPlayed && this.turnManager.getBazaCount() === 0) {
-        actions.push('envido', 'envido_5', 'falta_envido');
-      }
+      // Los cantos (truco, envido, flor) y el irse al mazo
+      // solo están disponibles en el propio turno
+      if (isMyTurn) {
+        // Envido solo en primera baza
+        if (!this.envidoPlayed && this.turnManager.getBazaCount() === 0) {
+          actions.push('envido', 'envido_5', 'falta_envido');
+        }
 
-      // Truco
-      if (!this.trucoLevel || this.trucoCallerTeam !== playerTeam) {
-        const nextTruco = this._getNextTrucoLevel();
-        if (nextTruco) actions.push(nextTruco);
-      }
+        // Truco
+        if (!this.trucoLevel || this.trucoCallerTeam !== playerTeam) {
+          const nextTruco = this._getNextTrucoLevel();
+          if (nextTruco) actions.push(nextTruco);
+        }
 
-      // Flor
-      if (!this.florPlayed && EnvidoCalc.hasFlor(this.players[playerIndex].getHand(), this.vira)) {
-        actions.push('flor');
-      }
+        // Flor
+        if (!this.florPlayed && EnvidoCalc.hasFlor(this.players[playerIndex].getHand(), this.vira)) {
+          actions.push('flor');
+        }
 
-      // Irse al mazo
-      if (this.players[playerIndex].cardsRemaining > 0) {
-        actions.push('fold_hand');
+        // Irse al mazo
+        if (this.players[playerIndex].cardsRemaining > 0) {
+          actions.push('fold_hand');
+        }
       }
     }
 
