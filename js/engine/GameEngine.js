@@ -393,7 +393,7 @@ export class GameEngine {
     }
 
     // Si el oponente es CPU, responder automáticamente
-    this._checkCPUCantoResponse('truco', nextLevel);
+    this._checkCPUCantoResponse('truco', nextLevel, callerTeam);
   }
 
   /**
@@ -428,7 +428,7 @@ export class GameEngine {
       });
     }
 
-    this._checkCPUCantoResponse('envido', level);
+    this._checkCPUCantoResponse('envido', level, callerTeam);
   }
 
   /**
@@ -478,7 +478,7 @@ export class GameEngine {
           opponentHasFlor: true
         });
       }
-      this._checkCPUCantoResponse('flor', null);
+      this._checkCPUCantoResponse('flor', null, callerTeam);
     } else {
       if (this.onCantoOffered) {
         this.onCantoOffered({
@@ -794,7 +794,14 @@ export class GameEngine {
     }
 
     if (!this.config.isHuman(cpuIndex)) {
-      setTimeout(() => this._executeCPUTurn(cpuIndex), 800 + Math.random() * 600);
+      const delay = 800 + Math.random() * 600;
+      this._cpuActionTimer = setTimeout(() => {
+        // Verificar nuevamente que el estado siga siendo válido antes de actuar
+        if (this.fsm.getState() === GameState.WAITING_PLAY &&
+            this.turnManager.getCurrentTurn() === currentTurn) {
+          this._executeCPUTurn(cpuIndex);
+        }
+      }, delay);
     }
   }
 
@@ -803,9 +810,17 @@ export class GameEngine {
    * @param {number} cpuIndex
    */
   _executeCPUTurn(cpuIndex) {
+    // Guarda de seguridad: solo actuar si el estado FSM es WAITING_PLAY
+    if (this.fsm.getState() !== GameState.WAITING_PLAY) return;
+
     const cpu = this.players[cpuIndex];
     if (!(cpu instanceof CPUPlayer)) return;
     if (cpu.cardsRemaining === 0) return;
+
+    // Verificar que realmente es el turno de esta CPU
+    const currentTurn = this.turnManager.getCurrentTurn();
+    const expectedSide = cpuIndex === 0 ? 'player' : 'cpu';
+    if (currentTurn !== expectedSide) return;
 
     // Decidir si cantar envido (solo primera baza, primera jugada)
     if (!this.envidoPlayed && this.turnManager.getBazaCount() === 0 && !this.turnManager.currentBaza.player && !this.turnManager.currentBaza.cpu) {
@@ -813,6 +828,12 @@ export class GameEngine {
         this.callEnvido(cpuIndex, 'envido');
         return;
       }
+    }
+
+    // Declarar flor si la tiene (antes de truco, ya que es obligatorio)
+    if (!this.florPlayed && EnvidoCalc.hasFlor(cpu.getHand(), this.vira)) {
+      this.declareFlor(cpuIndex);
+      return;
     }
 
     // Decidir si cantar truco
@@ -823,32 +844,48 @@ export class GameEngine {
       }
     }
 
-    // Declarar flor si la tiene
-    if (!this.florPlayed && EnvidoCalc.hasFlor(cpu.getHand(), this.vira)) {
-      this.declareFlor(cpuIndex);
-      return;
-    }
-
     // Jugar carta
     const opponentCard = this.turnManager.currentBaza.player;
     const cardIndex = cpu.chooseCard(this.vira, opponentCard);
     const card = cpu.getHand()[cardIndex];
+    if (!card) return; // Guarda extra por si getHand() está vacío
     this.playCard(cpuIndex, card.id);
   }
 
   /**
    * Verifica si la CPU debe responder a un canto.
+   * @param {string} cantoType - 'truco'|'envido'|'flor'
+   * @param {string|null} level - Nivel del canto
+   * @param {string} [callerTeamOverride] - Equipo que cantó (opcional, para forzar)
    */
-  _checkCPUCantoResponse(cantoType, level) {
-    const respondingTeam = this.getOpponentTeam(
-      cantoType === 'truco' ? this.trucoCallerTeam : this.envidoCallerTeam
-    );
+  _checkCPUCantoResponse(cantoType, level, callerTeamOverride) {
+    // Determinar el equipo que CANTÓ
+    let callerTeam;
+    if (callerTeamOverride) {
+      callerTeam = callerTeamOverride;
+    } else if (cantoType === 'truco') {
+      callerTeam = this.trucoCallerTeam;
+    } else {
+      callerTeam = this.envidoCallerTeam;
+    }
+
+    if (!callerTeam) return; // Sin caller, no hay respuesta
+
+    const respondingTeam = this.getOpponentTeam(callerTeam);
     const respondingPlayers = this.config.getTeamPlayers(respondingTeam);
 
     // Buscar el primer CPU que responde
     for (const p of respondingPlayers) {
       if (p.type === 'cpu') {
         setTimeout(() => {
+          // Verificar que el estado siga siendo válido para responder
+          const currentState = this.fsm.getState();
+          const isValidState = this._isTrucoState(currentState) ||
+                               this._isEnvidoState(currentState) ||
+                               currentState === GameState.FLOR_DECLARED ||
+                               currentState === GameState.CONTRAFLOR_OFFERED;
+          if (!isValidState) return;
+
           const cpu = this.players[p.index];
           if (!(cpu instanceof CPUPlayer)) return;
 

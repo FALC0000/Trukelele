@@ -26,6 +26,20 @@ export class BoardRenderer {
   init() {
     this.container.innerHTML = `
       <div class="table-area">
+        <!-- HUD Móvil: Marcador compacto (solo visible en móvil) -->
+        <div class="mobile-score-hud" id="mobile-score-hud" style="display:none;">
+          <div class="mobile-score-team" id="mobile-score-t1">
+            <span class="mobile-score-name" id="mobile-name-t1">Tú</span>
+            <span class="mobile-score-pts" id="mobile-pts-t1">0</span>
+          </div>
+          <div class="mobile-score-sep">VS</div>
+          <div class="mobile-score-team" id="mobile-score-t2">
+            <span class="mobile-score-pts" id="mobile-pts-t2">0</span>
+            <span class="mobile-score-name" id="mobile-name-t2">CPU</span>
+          </div>
+          <div class="mobile-score-rnd" id="mobile-round">R1</div>
+        </div>
+
         <!-- CPU / Oponente (Arriba) -->
         <div class="player-area player-area--top" id="p2-area">
           <div class="player-info">
@@ -76,6 +90,17 @@ export class BoardRenderer {
     this.elements.p2Name = document.getElementById('p2-name');
     this.elements.bazaHistory = document.getElementById('baza-history');
     this.elements.bazaHistoryList = document.getElementById('baza-history-list');
+    this.elements.mobileScoreHud = document.getElementById('mobile-score-hud');
+
+    // Mostrar HUD móvil solo si es pantalla pequeña
+    this._checkMobileHud();
+    window.addEventListener('resize', () => this._checkMobileHud());
+  }
+
+  _checkMobileHud() {
+    if (this.elements.mobileScoreHud) {
+      this.elements.mobileScoreHud.style.display = window.innerWidth <= 768 ? 'flex' : 'none';
+    }
   }
 
   /**
@@ -103,6 +128,26 @@ export class BoardRenderer {
     // Turnos
     this.elements.p1Area.classList.toggle('is-turn', state.currentTurn === 'player');
     this.elements.p2Area.classList.toggle('is-turn', state.currentTurn === 'cpu');
+
+    // Actualizar HUD móvil de puntuación
+    if (this.elements.mobileScoreHud && window.innerWidth <= 768) {
+      if (state.scores) {
+        const pts1 = document.getElementById('mobile-pts-t1');
+        const pts2 = document.getElementById('mobile-pts-t2');
+        const rnd = document.getElementById('mobile-round');
+        if (pts1) pts1.textContent = state.scores.team1 ?? 0;
+        if (pts2) pts2.textContent = state.scores.team2 ?? 0;
+        if (rnd && state.roundNumber) rnd.textContent = `R${state.roundNumber}`;
+        if (localPlayer) {
+          const n1 = document.getElementById('mobile-name-t1');
+          if (n1) n1.textContent = localPlayer.name;
+        }
+        if (opponentPlayer) {
+          const n2 = document.getElementById('mobile-name-t2');
+          if (n2) n2.textContent = opponentPlayer.name;
+        }
+      }
+    }
 
     // Renderizar mano local (si es turno local o siempre visible)
     // Nota: en modo 1v1 local, la mano se renderiza desde UIRenderer usando renderLocalHand

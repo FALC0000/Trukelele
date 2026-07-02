@@ -32,15 +32,36 @@ export class HostEngineWrapper {
     ];
 
     events.forEach(eventName => {
-      // Guardar el handler original si existiera (ej. UI local del Host)
-      const originalHandler = this.engine[eventName];
+      // Capturar el handler ACTUAL del engine en el momento de llamar _bindEvents.
+      // Esto permite llamar _bindEvents() después de ui.init() para capturar
+      // correctamente los handlers registrados por la UI.
+      const currentHandler = this.engine[eventName];
 
       this.engine[eventName] = (eventData) => {
-        // Ejecutar localmente para el Host
-        if (originalHandler) originalHandler.call(this.engine, eventData);
+        // Para onRoundStart, enriquecer el eventData con la mano del Guest (player index 1)
+        // para que el ClientEngineProxy pueda extraerla.
+        let dataToSend = eventData;
+        if (eventName === 'onRoundStart' && eventData && eventData.players) {
+          dataToSend = {
+            ...eventData,
+            players: eventData.players.map((p) => {
+              // Incluir la mano del jugador 1 (Guest) siempre
+              if (p.index === 1 && !p.hand) {
+                return {
+                  ...p,
+                  hand: this.engine.players[1] ? this.engine.players[1].getHand() : []
+                };
+              }
+              return p;
+            })
+          };
+        }
 
-        // Enviar por red al Guest
-        this.network.sendMessage('EVENT', { eventName, eventData });
+        // Ejecutar localmente para el Host (handler de UI)
+        if (currentHandler) currentHandler.call(this.engine, eventData);
+
+        // Enviar por red al Guest (con la mano enriquecida si es onRoundStart)
+        this.network.sendMessage('EVENT', { eventName, eventData: dataToSend });
 
         // Enviar estado actualizado
         this._syncState();

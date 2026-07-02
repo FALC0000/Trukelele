@@ -245,3 +245,52 @@
 .hand--cpu .card:nth-child(1) { transform: rotate(5deg); }
 .hand--cpu .card:nth-child(2) { transform: rotate(0deg); }
 .hand--cpu .card:nth-child(3) { transform: rotate(-5deg); }
+
+/* ─── Mobile Responsive ─── */
+@media (max-width: 768px) {
+  .card {
+    width: 65px;
+    height: 95px;
+    border-radius: 8px;
+  }
+
+  .card__number {
+    font-size: 1.3rem;
+  }
+
+  .card__symbol {
+    font-size: 1.1rem;
+  }
+
+  .card__name {
+    font-size: 0.45rem;
+  }
+
+  .card__corner-number { font-size: 0.55rem; }
+  .card__corner-symbol { font-size: 0.5rem; }
+
+  .card--vira {
+    transform: rotate(-8deg) scale(0.9);
+  }
+
+  .hand {
+    gap: 6px;
+    padding: var(--space-sm);
+    perspective: 600px;
+  }
+
+  /* Fan layout más compacto en móvil */
+  .hand .card:nth-child(1) { transform: rotate(-4deg); }
+  .hand .card:nth-child(2) { transform: rotate(0deg); }
+  .hand .card:nth-child(3) { transform: rotate(4deg); }
+
+  .hand .card:hover:not(.card--disabled),
+  .hand .card:active:not(.card--disabled) {
+    transform: translateY(-10px) rotate(0deg) !important;
+  }
+
+  /* Toque en lugar de hover en móvil */
+  .hand--cpu .card:nth-child(1) { transform: rotate(4deg); }
+  .hand--cpu .card:nth-child(2) { transform: rotate(0deg); }
+  .hand--cpu .card:nth-child(3) { transform: rotate(-4deg); }
+}

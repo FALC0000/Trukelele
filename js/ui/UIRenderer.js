@@ -63,12 +63,17 @@ export class UIRenderer {
     
     // Renderizar mano local si corresponde
     if (this.config.isHuman(this.localViewIndex)) {
-      const localPlayer = state.players[this.localViewIndex];
-      // No renderizamos la mano si estamos en transición de turno
-      if (this.board.elements.p1Hand) {
+      // Obtener la mano: si el engine expone players[] con getHand(), usarlo.
+      // Tanto GameEngine como ClientEngineProxy deben exponer this.players[i].getHand()
+      const localPlayerObj = this.engine.players ? this.engine.players[this.localViewIndex] : null;
+      const localHand = localPlayerObj && typeof localPlayerObj.getHand === 'function'
+        ? localPlayerObj.getHand()
+        : null;
+
+      if (localHand && this.board.elements.p1Hand) {
         this.board.renderLocalHand(
-          this.engine.players[this.localViewIndex].getHand(), 
-          state.vira, 
+          localHand,
+          state.vira,
           this.handleCardClick.bind(this)
         );
       }
@@ -76,14 +81,23 @@ export class UIRenderer {
 
     // Renderizar mano oponente
     if (this.board.elements.p2Hand) {
-      const p2Cards = state.players[this.localViewIndex === 0 ? 1 : 0]?.cardsRemaining || 0;
-      this.board.renderOpponentHand(p2Cards);
+      const opponentIdx = this.localViewIndex === 0 ? 1 : 0;
+      const opponentState = state.players ? state.players.find(p => {
+        const team = this.engine.getPlayerTeam ? this.engine.getPlayerTeam(opponentIdx) : (opponentIdx % 2 === 0 ? 'team1' : 'team2');
+        return p.team !== this.engine.getPlayerTeam(this.localViewIndex);
+      }) : null;
+      const p2Cards = opponentState ? opponentState.cardsRemaining
+        : (this.engine.players && this.engine.players[opponentIdx] ? this.engine.players[opponentIdx].cardsRemaining : 0);
+      this.board.renderOpponentHand(p2Cards || 0);
     }
 
     // Actualizar historial de bazas en la mesa
     if (this.board.updateBazaHistory) {
-      const bazas = this.engine.turnManager.bazas;
-      this.board.updateBazaHistory(bazas);
+      // GameEngine tiene turnManager.bazas; ClientEngineProxy no.
+      // Solo llamar si existe el turnManager.
+      if (this.engine.turnManager && this.engine.turnManager.bazas) {
+        this.board.updateBazaHistory(this.engine.turnManager.bazas);
+      }
     }
   }
 
@@ -151,8 +165,11 @@ export class UIRenderer {
     // Si fue el oponente, actualizamos su mano (quitamos una carta oculta)
     if (data.playerIndex !== this.localViewIndex) {
       const state = this.engine.getGameState();
-      const oppCards = state.players[data.playerIndex].cardsRemaining;
-      this.board.renderOpponentHand(oppCards);
+      const oppIdx = data.playerIndex;
+      const oppCards = state.players
+        ? (state.players.find(p => p.index === oppIdx) || {}).cardsRemaining
+        : 0;
+      this.board.renderOpponentHand(oppCards || 0);
     }
 
     // Animamos la carta jugada
@@ -161,9 +178,13 @@ export class UIRenderer {
     // Si fui yo, re-renderizo mi mano
     if (data.playerIndex === this.localViewIndex) {
       const state = this.engine.getGameState();
+      const localPlayerObj = this.engine.players ? this.engine.players[this.localViewIndex] : null;
+      const localHand = localPlayerObj && typeof localPlayerObj.getHand === 'function'
+        ? localPlayerObj.getHand()
+        : [];
       this.board.renderLocalHand(
-        this.engine.players[this.localViewIndex].getHand(), 
-        state.vira, 
+        localHand,
+        state.vira,
         this.handleCardClick.bind(this)
       );
     }

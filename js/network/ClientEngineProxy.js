@@ -23,9 +23,28 @@ export class ClientEngineProxy {
     
     this.latestState = {
       state: 'WAITING_PLAY',
-      currentTurn: 'player',
-      players: []
+      currentTurn: 'cpu', // El Guest (Player 2) espera al Host primero
+      players: [],
+      scores: { team1: 0, team2: 0 },
+      vira: null,
+      roundNumber: 0,
+      envidoPlayed: false,
+      florPlayed: false,
+      trucoLevel: null,
+      bazaCount: 0,
+      bazaWins: { player: 0, cpu: 0 },
+      currentBaza: { player: null, cpu: null },
+      availableActions: []
     };
+
+    // Mano local del Guest (actualizada por onRoundStart y onCardPlayed)
+    this._localHand = [];
+
+    // Array de players mock con getHand() para compatibilidad con UIRenderer
+    this.players = [
+      { name: 'Host', getHand: () => [], cardsRemaining: 0 },
+      { name: 'Tú', getHand: () => this._localHand, cardsRemaining: this._localHand.length }
+    ];
 
     // Callbacks de UI
     this.onStateChange = null;
@@ -49,6 +68,9 @@ export class ClientEngineProxy {
   // ─────────────── MÉTODOS DEL ENGINE (UI -> Proxy -> Network) ───────────────
 
   playCard(playerIndex, cardId) {
+    // Quitar la carta de la mano local del Guest inmediatamente
+    this._localHand = this._localHand.filter(c => c.id !== cardId);
+    this._syncPlayersHand();
     this.network.sendMessage('ACTION', { method: 'playCard', args: [playerIndex, cardId] });
   }
 
@@ -83,13 +105,25 @@ export class ClientEngineProxy {
   }
 
   getAvailableActions(playerIndex) {
-    // Para simplificar, el servidor enviará las acciones disponibles en el estado,
-    // o calculamos aquí basándonos en el último estado recibido.
     return this.latestState.availableActions || [];
   }
 
   getPlayerTeam(playerIndex) {
     return this.config.getPlayerTeam(playerIndex);
+  }
+
+  // ─────────────── SYNC HAND ───────────────
+
+  /**
+   * Actualiza el array de players mock con la mano actual.
+   */
+  _syncPlayersHand() {
+    this.players[1] = {
+      ...this.players[1],
+      name: this.players[1].name,
+      getHand: () => this._localHand,
+      cardsRemaining: this._localHand.length
+    };
   }
 
   // ─────────────── MANEJO DE MENSAJES (Network -> Proxy -> UI) ───────────────
@@ -127,16 +161,60 @@ export class ClientEngineProxy {
 
     if (type === 'SYNC_STATE') {
       this.latestState = payload;
+      // Sincronizar cardsRemaining del player 0 (Host) desde el estado
+      if (payload.players && payload.players[0]) {
+        this.players[0] = {
+          ...this.players[0],
+          name: payload.players[0].name,
+          cardsRemaining: payload.players[0].cardsRemaining,
+          getHand: () => []
+        };
+      }
       return;
     }
 
     // Emisión de eventos
     if (type === 'EVENT') {
       const { eventName, eventData } = payload;
-      
+
+      // Interceptar onRoundStart para extraer la mano del Guest (player index 1)
+      if (eventName === 'onRoundStart') {
+        if (eventData && eventData.players) {
+          const guestPlayerData = eventData.players.find(p => p.index === 1);
+          if (guestPlayerData && guestPlayerData.hand) {
+            this._localHand = guestPlayerData.hand;
+            this._syncPlayersHand();
+            // Actualizar nombres
+            if (eventData.players[0]) {
+              this.players[0] = {
+                ...this.players[0],
+                name: eventData.players[0].name,
+                getHand: () => []
+              };
+            }
+            if (eventData.players[1]) {
+              this.players[1] = {
+                ...this.players[1],
+                name: eventData.players[1].name,
+                getHand: () => this._localHand,
+                cardsRemaining: this._localHand.length
+              };
+            }
+          }
+        }
+        if (this.onRoundStart) this.onRoundStart(eventData);
+        return;
+      }
+
+      // Interceptar onCardPlayed para actualizar mano local si el Guest jugó
+      if (eventName === 'onCardPlayed') {
+        // El Guest es playerIndex=1; si el Host jugó (index=0), no tocamos la mano
+        // (ya la quitamos en playCard() cuando el Guest juega)
+        if (this.onCardPlayed) this.onCardPlayed(eventData);
+        return;
+      }
+
       if (eventName === 'onStateChange' && this.onStateChange) this.onStateChange(eventData);
-      else if (eventName === 'onRoundStart' && this.onRoundStart) this.onRoundStart(eventData);
-      else if (eventName === 'onCardPlayed' && this.onCardPlayed) this.onCardPlayed(eventData);
       else if (eventName === 'onBazaResolved' && this.onBazaResolved) this.onBazaResolved(eventData);
       else if (eventName === 'onRoundEnd' && this.onRoundEnd) this.onRoundEnd(eventData);
       else if (eventName === 'onGameOver' && this.onGameOver) this.onGameOver(eventData);

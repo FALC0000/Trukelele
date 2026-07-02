@@ -12,6 +12,25 @@
   box-shadow: -5px 0 20px rgba(0, 0, 0, 0.5);
 }
 
+/* ─── Mobile: Scoreboard oculto, HUD integrado ─── */
+@media (max-width: 768px) {
+  .scoreboard-panel {
+    width: 100%;
+    height: auto;
+    max-height: 0;
+    overflow: hidden;
+    border-left: none;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    box-shadow: none;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 100;
+    display: none; /* Oculto en móvil - scores en board-hud */
+  }
+}
+
 .scoreboard-header {
   padding: var(--space-lg);
   border-bottom: 1px solid rgba(255, 255, 255, 0.05);

@@ -105,10 +105,28 @@ body {
   color: var(--color-text-primary);
   background: var(--color-bg-dark);
   min-height: 100vh;
+  min-height: 100dvh;
   overflow: hidden;
   line-height: 1.5;
   display: flex;
   flex-direction: row;
+}
+
+/* ─── Mobile Layout ─── */
+@media (max-width: 768px) {
+  :root {
+    --space-xs: 3px;
+    --space-sm: 6px;
+    --space-md: 10px;
+    --space-lg: 16px;
+    --space-xl: 20px;
+    --space-2xl: 28px;
+  }
+
+  body {
+    flex-direction: column;
+    overflow: hidden;
+  }
 }
 
 h1, h2, h3, h4, h5, h6 {

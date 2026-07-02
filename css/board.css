@@ -244,8 +244,12 @@
   left: 50%;
   transform: translateX(-50%);
   display: flex;
+  flex-wrap: wrap;
   gap: var(--space-sm);
+  justify-content: center;
   z-index: 20;
+  max-width: calc(100vw - var(--space-lg));
+  padding: 0 var(--space-sm);
 }
 
 .btn-action {
@@ -304,6 +308,103 @@
   border-color: var(--color-accent-red);
 }
 
+/* ─── Mobile Responsive ─── */
+@media (max-width: 768px) {
+  .board-container {
+    height: 100dvh;
+    overflow: hidden;
+  }
+
+  .table-area {
+    height: 100%;
+  }
+
+  .player-area--top {
+    height: 22%;
+    padding-top: var(--space-sm);
+  }
+
+  .player-area--bottom {
+    height: 32%;
+    padding-bottom: 52px; /* Espacio para control-bar */
+  }
+
+  .play-area {
+    flex-grow: 1;
+  }
+
+  .play-zone {
+    width: 200px;
+    height: 150px;
+  }
+
+  /* Vira: más pequeña y reposicionada */
+  .vira-container {
+    right: var(--space-sm);
+    top: 50%;
+    transform: translateY(-50%);
+  }
+
+  .deck-stack {
+    width: 58px;
+    height: 84px;
+  }
+
+  .vira-slot {
+    left: -40px;
+  }
+
+  /* Historial de bazas: más compacto */
+  .baza-history {
+    left: var(--space-sm);
+    bottom: 58px;
+    padding: var(--space-xs);
+  }
+
+  .baza-mini-card {
+    width: 22px;
+    height: 30px;
+    font-size: 0.45rem;
+  }
+
+  /* Control Bar: flotante centrado con wrap */
+  .control-bar {
+    bottom: var(--space-xs);
+    max-width: 100vw;
+    padding: 0 var(--space-xs);
+    gap: 4px;
+  }
+
+  .btn-action {
+    padding: 6px 10px;
+    font-size: 0.7rem;
+    letter-spacing: 0.5px;
+  }
+
+  /* Tarjetas jugadas más pequeñas */
+  .played-card--p1 {
+    bottom: 5%;
+  }
+
+  .played-card--p2 {
+    top: 5%;
+  }
+
+  /* Player info más compacto */
+  .player-info {
+    padding: 4px var(--space-sm);
+    margin-bottom: 4px;
+  }
+
+  .player-name {
+    font-size: 0.75rem;
+  }
+
+  .player-status {
+    font-size: 0.6rem;
+  }
+}
+
 /* ─── Turn Transition Overlay (1v1 Local) ─── */
 .turn-transition {
   position: absolute;
@@ -334,4 +435,63 @@
 .turn-transition__text {
   font-size: 1.2rem;
   color: var(--color-text-secondary);
+}
+
+/* ─── Mobile Score HUD ─── */
+.mobile-score-hud {
+  display: none; /* Mostrado sólo en móvil vía JS */
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-md);
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 15;
+  background: linear-gradient(to bottom, rgba(10, 15, 26, 0.9), transparent);
+  padding: 6px var(--space-md) 12px;
+  pointer-events: none;
+}
+
+.mobile-score-team {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.mobile-score-name {
+  font-family: var(--font-display);
+  font-size: 0.7rem;
+  color: var(--color-text-secondary);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.mobile-score-pts {
+  font-family: var(--font-display);
+  font-size: 1.2rem;
+  font-weight: 800;
+  color: var(--color-gold);
+  min-width: 24px;
+  text-align: center;
+}
+
+.mobile-score-sep {
+  font-size: 0.6rem;
+  color: var(--color-text-muted);
+  letter-spacing: 1px;
+  font-weight: 700;
+}
+
+.mobile-score-rnd {
+  position: absolute;
+  right: var(--space-sm);
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 0.6rem;
+  color: var(--color-text-muted);
+  font-weight: 600;
+  letter-spacing: 1px;
 }
