@@ -45,7 +45,7 @@ export class GameConfig {
           playerNames[0] || 'Jugador',
           playerNames[1] || 'CPU'
         ];
-        this.teamNames = ['Jugador', 'CPU'];
+        this.teamNames = [this.playerNames[0], this.playerNames[1]];
         this.teamComposition = {
           team1: [{ name: this.playerNames[0], type: 'human', index: 0 }],
           team2: [{ name: this.playerNames[1], type: 'cpu', index: 1 }],

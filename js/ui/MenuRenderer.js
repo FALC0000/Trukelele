@@ -243,12 +243,13 @@ export class MenuRenderer {
       if (!playerName) playerName = 'Jugador 1';
       localStorage.setItem('trukelele_player_name', playerName);
 
+      this.hide();
+
       onStart({
         mode: this.selectedMode,
         targetScore: this.selectedScore,
         playerName: playerName
       });
-      this.hide();
     });
 
   }
