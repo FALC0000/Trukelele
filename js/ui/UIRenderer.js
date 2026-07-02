@@ -175,13 +175,14 @@ export class UIRenderer {
     // Animamos la carta jugada
     this.board.playCardAnim(data);
     
-    // Si fui yo, re-renderizo mi mano
-    if (data.playerIndex === this.localViewIndex) {
-      const state = this.engine.getGameState();
-      const localPlayerObj = this.engine.players ? this.engine.players[this.localViewIndex] : null;
-      const localHand = localPlayerObj && typeof localPlayerObj.getHand === 'function'
-        ? localPlayerObj.getHand()
-        : [];
+    // Siempre re-renderizamos la mano local (para que no desaparezca tras
+    // la animación de la carta del oponente, crítico en modo online)
+    const state = this.engine.getGameState();
+    const localPlayerObj = this.engine.players ? this.engine.players[this.localViewIndex] : null;
+    const localHand = localPlayerObj && typeof localPlayerObj.getHand === 'function'
+      ? localPlayerObj.getHand()
+      : [];
+    if (localHand.length > 0 && this.board.elements && this.board.elements.p1Hand) {
       this.board.renderLocalHand(
         localHand,
         state.vira,
