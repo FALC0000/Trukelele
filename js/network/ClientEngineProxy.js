@@ -139,20 +139,23 @@ export class ClientEngineProxy {
   // ─────────────── MANEJO DE MENSAJES (Network -> Proxy -> UI) ───────────────
 
   _reconstructCards(obj) {
-    if (!obj || typeof obj !== 'object') return obj;
+    if (obj === null || obj === undefined) return obj;
+    if (typeof obj !== 'object') return obj;
     
     if (Array.isArray(obj)) {
       return obj.map(item => this._reconstructCards(item));
     }
     
-    // Identificar si el objeto tiene la firma de una carta
-    if (obj.numero !== undefined && obj.palo !== undefined && obj.id) {
+    // Identificar si el objeto tiene la firma de una carta (numero y palo son suficientes)
+    if (obj.numero !== undefined && obj.palo !== undefined) {
       return new Card(obj.numero, obj.palo);
     }
     
     const result = {};
     for (const key in obj) {
-      result[key] = this._reconstructCards(obj[key]);
+      if (Object.prototype.hasOwnProperty.call(obj, key)) {
+        result[key] = this._reconstructCards(obj[key]);
+      }
     }
     return result;
   }

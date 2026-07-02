@@ -34,8 +34,21 @@ export class CardRenderer {
       // Determinar si es carta especial
       let isSpecial = false;
       if (options.viraCard) {
-        if (card.isPerico(options.viraCard) || card.isPerica(options.viraCard)) {
-          isSpecial = true;
+        if (typeof card.isPerico === 'function') {
+          if (card.isPerico(options.viraCard) || card.isPerica(options.viraCard)) {
+            isSpecial = true;
+          }
+        } else {
+          // Fallback if card is a plain object
+          const viraPalo = options.viraCard.palo;
+          const viraNum = options.viraCard.numero;
+          const cardPalo = card.palo;
+          const cardNum = card.numero;
+          const isPerico = (cardPalo === viraPalo && ( (viraNum === 11 && cardNum === 12) || (viraNum !== 11 && cardNum === 11) ));
+          const isPerica = (cardPalo === viraPalo && ( (viraNum === 10 && cardNum === 12) || (viraNum !== 10 && cardNum === 10) ));
+          if (isPerico || isPerica) {
+            isSpecial = true;
+          }
         }
       }
       
@@ -85,14 +98,20 @@ export class CardRenderer {
     return el;
   }
 
-  /**
-   * Obtiene un nombre corto para mostrar en la carta.
-   * @private
-   */
   static _getShortName(card, isSpecial, viraCard) {
-    if (isSpecial) {
-      if (card.isPerico(viraCard)) return 'PERICO';
-      if (card.isPerica(viraCard)) return 'PERICA';
+    if (isSpecial && viraCard) {
+      if (typeof card.isPerico === 'function') {
+        if (card.isPerico(viraCard)) return 'PERICO';
+        if (card.isPerica(viraCard)) return 'PERICA';
+      } else {
+        const viraPalo = viraCard.palo;
+        const viraNum = viraCard.numero;
+        const cardPalo = card.palo;
+        const cardNum = card.numero;
+        const isPerico = (cardPalo === viraPalo && ( (viraNum === 11 && cardNum === 12) || (viraNum !== 11 && cardNum === 11) ));
+        if (isPerico) return 'PERICO';
+        return 'PERICA';
+      }
     }
     
     // Nombres fijos especiales
