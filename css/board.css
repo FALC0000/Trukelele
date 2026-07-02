@@ -326,7 +326,7 @@
 
   .player-area--bottom {
     height: 32%;
-    padding-bottom: 52px; /* Espacio para control-bar */
+    padding-bottom: 85px; /* Más espacio para control-bar scrollable */
   }
 
   .play-area {
@@ -367,18 +367,24 @@
     font-size: 0.45rem;
   }
 
-  /* Control Bar: flotante centrado con wrap */
+  /* Control Bar: scroll horizontal fluido */
   .control-bar {
     bottom: var(--space-xs);
     max-width: 100vw;
-    padding: 0 var(--space-xs);
-    gap: 4px;
+    padding: 4px var(--space-xs) 8px;
+    gap: 6px;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    justify-content: flex-start;
+    -webkit-overflow-scrolling: touch;
   }
 
   .btn-action {
-    padding: 6px 10px;
-    font-size: 0.7rem;
+    padding: 8px 12px;
+    font-size: 0.75rem;
     letter-spacing: 0.5px;
+    flex-shrink: 0;
+    white-space: nowrap;
   }
 
   /* Tarjetas jugadas más pequeñas */
