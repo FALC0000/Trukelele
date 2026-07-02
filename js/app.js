@@ -48,7 +48,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
             if (network.connections.length === expectedGuests) {
               // Todos conectados, iniciar el juego
-              const config = new GameConfig({ mode: menuConfig.mode, targetScore: menuConfig.targetScore });
+              const guestNames = network.connections.map(conn => (conn.metadata && conn.metadata.playerName) ? conn.metadata.playerName : 'Jugador');
+              const config = new GameConfig({
+                mode: menuConfig.mode,
+                targetScore: menuConfig.targetScore,
+                playerNames: [menuConfig.playerName, ...guestNames]
+              });
               const engine = new GameEngine(config);
               
               const ui = new UIRenderer(engine);
@@ -77,7 +82,7 @@ document.addEventListener('DOMContentLoaded', () => {
               <style>@keyframes spin { to { transform: rotate(360deg); } }</style>
             </div>
           `;
-          network.joinRoom(roomId);
+          network.joinRoom(roomId, menuConfig.playerName);
           
           network.onConnected = (playerIndex) => {
             document.getElementById(menuContainerId).style.display = 'none';
@@ -106,6 +111,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const config = new GameConfig({
         mode: menuConfig.mode,
         targetScore: menuConfig.targetScore,
+        playerNames: [menuConfig.playerName]
       });
 
       const engine = new GameEngine(config);

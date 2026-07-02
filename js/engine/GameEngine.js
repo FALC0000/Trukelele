@@ -569,7 +569,6 @@ export class GameEngine {
 
     } else if (response === 'raise') {
       // Subir la apuesta
-      this.trucoCallerTeam = responderTeam;
       this.callTruco(responderIndex);
     }
   }
@@ -613,7 +612,6 @@ export class GameEngine {
 
     } else if (response === 'raise') {
       // Subir envido
-      this.envidoCallerTeam = responderTeam;
       this.callEnvido(responderIndex, raiseLevel);
     }
   }

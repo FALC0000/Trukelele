@@ -68,15 +68,16 @@ export class NetworkManager {
   /**
    * Se une a una sala existente (actúa como Guest).
    * @param {string} roomId 
+   * @param {string} playerName
    */
-  joinRoom(roomId) {
+  joinRoom(roomId, playerName = 'Jugador') {
     this.isHost = false;
     this.connections = [];
     this.peer = new Peer(); // ID aleatorio para el cliente
 
     this.peer.on('open', (id) => {
       console.log('Cliente inicializado. Conectando a sala:', roomId);
-      const conn = this.peer.connect(roomId);
+      const conn = this.peer.connect(roomId, { metadata: { playerName } });
       
       conn.on('open', () => {
         console.log('¡Conectado a la sala!');

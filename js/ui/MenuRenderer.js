@@ -44,6 +44,11 @@ export class MenuRenderer {
             </div>
           </div>
 
+          <div class="menu-section">
+            <h2 class="menu-section-title">Tu Nombre</h2>
+            <input type="text" id="player-name-input" class="player-name-input" placeholder="Escribe tu nombre..." maxlength="15" value="${localStorage.getItem('trukelele_player_name') || ''}">
+          </div>
+
           <button class="btn-action btn-action--primary btn-start" id="btn-start-game">
             COMENZAR PARTIDA
           </button>
@@ -151,37 +156,57 @@ export class MenuRenderer {
         
         .score-selector {
           display: grid;
-          grid-template-columns: 1fr 1fr;
+          grid-template-columns: repeat(2, 1fr);
           gap: var(--space-sm);
         }
         
         .btn-score {
           background: var(--color-bg-card);
-          border: 2px solid rgba(255, 255, 255, 0.05);
-          border-radius: var(--radius-md);
-          padding: var(--space-sm) var(--space-md);
-          color: var(--color-text-secondary);
-          font-size: clamp(0.8rem, 3vw, 1rem);
+          border: 1px solid rgba(255, 255, 255, 0.1);
+          color: var(--color-text-primary);
+          padding: var(--space-sm);
+          border-radius: var(--radius-sm);
+          font-family: var(--font-display);
+          font-weight: 600;
+          font-size: 0.9rem;
           transition: all var(--transition-fast);
-          -webkit-tap-highlight-color: transparent;
         }
         
-        .btn-score:hover,
-        .btn-score:active {
+        .btn-score:hover {
           background: var(--color-bg-surface);
-          color: var(--color-text-primary);
         }
         
         .btn-score.is-active {
+          background: rgba(246, 199, 68, 0.1);
           border-color: var(--color-gold);
           color: var(--color-gold);
+          box-shadow: inset 0 0 10px rgba(246, 199, 68, 0.1);
+        }
+
+        .player-name-input {
+          width: 100%;
+          background: var(--color-bg-card);
+          border: 1px solid rgba(255, 255, 255, 0.1);
+          color: var(--color-text-primary);
+          padding: var(--space-sm) var(--space-md);
+          border-radius: var(--radius-sm);
+          font-family: var(--font-display);
+          font-size: 1rem;
+          outline: none;
+          transition: all var(--transition-fast);
+        }
+
+        .player-name-input:focus {
+          border-color: var(--color-gold);
+          box-shadow: 0 0 5px rgba(246, 199, 68, 0.3);
         }
         
         .btn-start {
           width: 100%;
-          padding: var(--space-md) var(--space-lg);
-          font-size: clamp(1rem, 4vw, 1.2rem);
-          margin-top: var(--space-md);
+          padding: var(--space-md);
+          font-size: 1.1rem;
+          letter-spacing: 2px;
+          margin-top: var(--space-lg);
           -webkit-tap-highlight-color: transparent;
         }
 
@@ -213,12 +238,19 @@ export class MenuRenderer {
     });
 
     document.getElementById('btn-start-game').addEventListener('click', () => {
-      this.hide();
+      const nameInput = document.getElementById('player-name-input');
+      let playerName = nameInput ? nameInput.value.trim() : '';
+      if (!playerName) playerName = 'Jugador 1';
+      localStorage.setItem('trukelele_player_name', playerName);
+
       onStart({
         mode: this.selectedMode,
-        targetScore: this.selectedScore
+        targetScore: this.selectedScore,
+        playerName: playerName
       });
+      this.hide();
     });
+
   }
 
   _createModeOption(mode) {
