@@ -65,6 +65,10 @@ export class ClientEngineProxy {
     this.onMessage = null;
     this.onDeferredReveal = null;
     this.onFoldHand = null;
+    // Callback adicional: se llama cada vez que llega SYNC_STATE del Host
+    this.onSyncState = null;
+    // Buffer para onRoundStart: se retiene hasta que llega el SYNC_STATE
+    this._pendingRoundStartData = null;
 
     // Escuchar mensajes de red
     this.network.onMessage = this._handleNetworkMessage.bind(this);
@@ -188,6 +192,14 @@ export class ClientEngineProxy {
            }
         });
       }
+      // Si había un onRoundStart pendiente, dispararlo AHORA que tenemos estado completo
+      if (this._pendingRoundStartData) {
+        const pendingData = this._pendingRoundStartData;
+        this._pendingRoundStartData = null;
+        if (this.onRoundStart) this.onRoundStart(pendingData);
+      }
+      // Notificar a la UI que el estado se actualizó
+      if (this.onSyncState) this.onSyncState();
       return;
     }
 
@@ -209,12 +221,13 @@ export class ClientEngineProxy {
              this.players[p.index] = {
                ...this.players[p.index],
                name: p.name,
-               cardsRemaining: p.index === this.localPlayerIndex ? this._localHand.length : 3, // Inicia con 3 cartas
+               cardsRemaining: p.index === this.localPlayerIndex ? this._localHand.length : 3,
                getHand: p.index === this.localPlayerIndex ? () => this._localHand : () => []
              };
           });
         }
-        if (this.onRoundStart) this.onRoundStart(eventData);
+        // Guardar en buffer: disparar DESPUÉS de que llegue el SYNC_STATE (para tener vira correcta)
+        this._pendingRoundStartData = eventData;
         return;
       }
 

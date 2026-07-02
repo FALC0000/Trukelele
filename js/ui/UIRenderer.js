@@ -52,6 +52,29 @@ export class UIRenderer {
     this.engine.onFoldHand = this.handleFoldHand.bind(this);
     this.engine.onMessage = this.handleMessage.bind(this);
 
+    // En modo online (ClientEngineProxy), suscribirse al callback de sincronización de estado.
+    // Esto garantiza que la mano local siempre se re-renderiza con el estado completo del Host.
+    if (typeof this.engine.onSyncState !== 'undefined') {
+      this.engine.onSyncState = () => {
+        const state = this.engine.getGameState();
+        const localPlayerObj = this.engine.players ? this.engine.players[this.localViewIndex] : null;
+        const localHand = localPlayerObj && typeof localPlayerObj.getHand === 'function'
+          ? localPlayerObj.getHand()
+          : [];
+        if (localHand.length > 0 && this.board.elements && this.board.elements.p1Hand) {
+          this.board.renderLocalHand(localHand, state.vira, this.handleCardClick.bind(this));
+        }
+        // Actualizar mano del oponente con datos frescos
+        if (this.board.elements && this.board.elements.p2Hand) {
+          const opponentIdx = this.localViewIndex === 0 ? 1 : 0;
+          const opponentData = state.players ? state.players.find(p => p.index === opponentIdx) : null;
+          const p2Cards = opponentData ? opponentData.cardsRemaining
+            : (this.engine.players && this.engine.players[opponentIdx] ? this.engine.players[opponentIdx].cardsRemaining : 0);
+          this.board.renderOpponentHand(p2Cards || 0);
+        }
+      };
+    }
+
     // Initial render
     this.updateAll();
   }
