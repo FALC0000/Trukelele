@@ -46,14 +46,14 @@ export class HostEngineWrapper {
             const dataToSend = {
               ...eventData,
               players: eventData.players.map((p) => {
-                // Incluir la mano SOLO para el jugador destino
-                if (p.index === i && !p.hand) {
+                if (p.index === i) {
+                  // Siempre incluir la mano del jugador destino (tomándola directamente del engine)
                   return {
                     ...p,
-                    hand: this.engine.players[i] ? this.engine.players[i].getHand() : []
+                    hand: this.engine.players[i] ? this.engine.players[i].getHand() : (p.hand || [])
                   };
                 }
-                // Ocultar las cartas si es otro jugador
+                // Ocultar las cartas de los demás jugadores
                 return { ...p, hand: null };
               })
             };
