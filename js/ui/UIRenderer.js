@@ -35,6 +35,7 @@ export class UIRenderer {
    */
   init() {
     this.board.init();
+    this.board.localViewIndex = this.localViewIndex;
     this.scoreboard.init(this.config.teamNames[0], this.config.teamNames[1], this.config.targetScore);
     
     // Bind engine events
@@ -295,9 +296,14 @@ export class UIRenderer {
     const myTeam = this.engine.getPlayerTeam(this.localViewIndex);
     
     if (respondingTeam === myTeam) {
-      this.dialogs.showCantoOffer(data, this.config.teamNames, (response, raiseLevel) => {
-        this.engine.respondToCanto(this.localViewIndex, response, raiseLevel);
-      });
+      // Si es flor y yo no tengo flor, solo muestro toast (no puedo responder)
+      if (data.type === 'flor' && data.opponentHasFlor === false) {
+        this.dialogs.showToast(`${data.callerName} declara FLOR (+3 pts)`);
+      } else {
+        this.dialogs.showCantoOffer(data, this.config.teamNames, (response, raiseLevel) => {
+          this.engine.respondToCanto(this.localViewIndex, response, raiseLevel);
+        });
+      }
     } else {
       // Solo muestro toast informativo
       let text = '';
@@ -338,6 +344,7 @@ export class UIRenderer {
     
     this.dialogs.showTurnTransition(data.nextPlayer, () => {
       this.localViewIndex = data.nextPlayerIndex;
+      this.board.localViewIndex = this.localViewIndex;
       this.updateAll();
     });
   }

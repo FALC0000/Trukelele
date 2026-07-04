@@ -73,7 +73,7 @@ export class HostEngineWrapper {
   _syncState() {
     const state = this.engine.getGameState();
     const totalPlayers = this.engine.config.getTotalPlayers();
-    
+
     // Enviar a cada cliente su estado con sus acciones disponibles
     for (let i = 1; i < totalPlayers; i++) {
       const clientState = { ...state };

@@ -10,12 +10,35 @@ import { MenuRenderer } from './ui/MenuRenderer.js';
 import { NetworkManager } from './network/NetworkManager.js';
 import { HostEngineWrapper } from './network/HostEngineWrapper.js';
 import { ClientEngineProxy } from './network/ClientEngineProxy.js';
+import { preloadAllCards } from './ui/CardPreloader.js';
 
 document.addEventListener('DOMContentLoaded', () => {
   const menuContainerId = 'menu-container';
-  const menu = new MenuRenderer(menuContainerId);
-  
-  menu.show((menuConfig) => {
+  const menuContainer = document.getElementById(menuContainerId);
+
+  // Mostrar pantalla de carga mientras se precargan las imágenes de cartas
+  menuContainer.innerHTML = `
+    <div style="position: fixed; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; background: var(--color-bg-dark); z-index: 9999;">
+      <h1 style="font-family: 'Outfit', sans-serif; color: var(--color-gold); font-size: 2.5rem; margin-bottom: 20px; letter-spacing: 4px;">TRUKELELE</h1>
+      <p style="color: var(--color-text-secondary); margin-bottom: 16px; font-size: 0.9rem;">Cargando cartas...</p>
+      <div style="width: 200px; height: 6px; background: rgba(255,255,255,0.1); border-radius: 3px; overflow: hidden;">
+        <div id="preload-bar" style="width: 0%; height: 100%; background: var(--color-gold); border-radius: 3px; transition: width 0.15s ease;"></div>
+      </div>
+      <div id="preload-pct" style="color: var(--color-text-muted); font-size: 0.75rem; margin-top: 8px;">0%</div>
+    </div>
+  `;
+
+  const bar = document.getElementById('preload-bar');
+  const pct = document.getElementById('preload-pct');
+
+  preloadAllCards((loaded, total) => {
+    const percent = Math.round((loaded / total) * 100);
+    if (bar) bar.style.width = percent + '%';
+    if (pct) pct.textContent = percent + '%';
+  }).then(() => {
+    // Imágenes precargadas, mostrar el menú
+    const menu = new MenuRenderer(menuContainerId);
+    menu.show((menuConfig) => {
     if (menuConfig.mode === GameMode.ONLINE_1V1 || menuConfig.mode === GameMode.ONLINE_2V2) {
       // Flujo Online
       const network = new NetworkManager();
@@ -121,5 +144,6 @@ document.addEventListener('DOMContentLoaded', () => {
       
       document.getElementById(menuContainerId).style.display = 'none';
     }
-  });
+    });
+  }); // end preloadAllCards .then()
 });

@@ -9,6 +9,7 @@ export class BoardRenderer {
   constructor(containerId) {
     this.container = document.getElementById(containerId);
     if (!this.container) throw new Error(`Contenedor no encontrado: ${containerId}`);
+    this.localViewIndex = 0; // Índice del jugador local (perspectiva)
     
     this.elements = {
       p1Area: null,
@@ -117,17 +118,19 @@ export class BoardRenderer {
       this.elements.viraSlot.appendChild(viraEl);
     }
 
-    // Identificar jugador local y oponente para la vista (asumimos vista desde team1)
-    const localPlayer = state.players.find(p => p.team === 'team1');
-    const opponentPlayer = state.players.find(p => p.team === 'team2');
+    // Identificar jugador local y oponente según la perspectiva (localViewIndex)
+    const localPlayer = state.players.find(p => p.index === this.localViewIndex);
+    const opponentPlayer = state.players.find(p => p.index !== this.localViewIndex);
 
-    // Nombres
+    // Nombres: local siempre abajo (p1), oponente siempre arriba (p2)
     if (localPlayer) this.elements.p1Name.textContent = localPlayer.name;
     if (opponentPlayer) this.elements.p2Name.textContent = opponentPlayer.name;
 
-    // Turnos
-    this.elements.p1Area.classList.toggle('is-turn', state.currentTurn === 'player');
-    this.elements.p2Area.classList.toggle('is-turn', state.currentTurn === 'cpu');
+    // Turnos — basados en la perspectiva local
+    const localIsTeam1 = this.localViewIndex === 0;
+    const isLocalTurn = localIsTeam1 ? state.currentTurn === 'player' : state.currentTurn === 'cpu';
+    this.elements.p1Area.classList.toggle('is-turn', isLocalTurn);
+    this.elements.p2Area.classList.toggle('is-turn', !isLocalTurn);
 
     // Actualizar HUD móvil de puntuación
     if (this.elements.mobileScoreHud && window.innerWidth <= 768) {
@@ -135,8 +138,11 @@ export class BoardRenderer {
         const pts1 = document.getElementById('mobile-pts-t1');
         const pts2 = document.getElementById('mobile-pts-t2');
         const rnd = document.getElementById('mobile-round');
-        if (pts1) pts1.textContent = state.scores.team1 ?? 0;
-        if (pts2) pts2.textContent = state.scores.team2 ?? 0;
+        // Mostrar puntos desde la perspectiva local
+        const localTeam = localPlayer ? localPlayer.team : 'team1';
+        const opponentTeam = opponentPlayer ? opponentPlayer.team : 'team2';
+        if (pts1) pts1.textContent = state.scores[localTeam] ?? 0;
+        if (pts2) pts2.textContent = state.scores[opponentTeam] ?? 0;
         if (rnd && state.roundNumber) rnd.textContent = `R${state.roundNumber}`;
         if (localPlayer) {
           const n1 = document.getElementById('mobile-name-t1');

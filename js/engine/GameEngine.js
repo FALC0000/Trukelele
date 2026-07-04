@@ -177,7 +177,7 @@ export class GameEngine {
     const player = this.players[playerIndex];
 
     // Auto-cantar flor al jugar la primera carta si la tiene y no la ha cantado
-    if (this.turnManager.getBazaCount() === 0 && !this.florPlayed && EnvidoCalc.hasFlor(player.getHand(), this.vira)) {
+    if (this.turnManager.getBazaCount() === 0 && !this.florPlayed && !this.envidoPlayed && EnvidoCalc.hasFlor(player.getHand(), this.vira)) {
       this.pendingCardPlay = { playerIndex, cardId };
       this.declareFlor(playerIndex);
       return;
@@ -405,6 +405,10 @@ export class GameEngine {
     if (this.envidoPlayed) return;
     if (this.turnManager.getBazaCount() > 0) return; // Solo primera baza
 
+    // Si el jugador tiene flor, no puede cantar envido (debe cantar flor)
+    const callerPlayer = this.players[callerIndex];
+    if (EnvidoCalc.hasFlor(callerPlayer.getHand(), this.vira)) return;
+
     const callerTeam = this.getPlayerTeam(callerIndex);
     this.envidoLevel = level;
     this.envidoCallerTeam = callerTeam;
@@ -437,6 +441,7 @@ export class GameEngine {
    */
   declareFlor(callerIndex) {
     if (this.florPlayed) return;
+    if (this.turnManager.getBazaCount() > 0) return; // Solo primera baza
     const player = this.players[callerIndex];
     if (!EnvidoCalc.hasFlor(player.getHand(), this.vira)) return;
 
@@ -820,18 +825,18 @@ export class GameEngine {
     const expectedSide = cpuIndex === 0 ? 'player' : 'cpu';
     if (currentTurn !== expectedSide) return;
 
-    // Decidir si cantar envido (solo primera baza, primera jugada)
+    // Declarar flor si la tiene (antes de envido y truco, ya que es obligatorio) — solo primera baza
+    if (!this.florPlayed && this.turnManager.getBazaCount() === 0 && EnvidoCalc.hasFlor(cpu.getHand(), this.vira)) {
+      this.declareFlor(cpuIndex);
+      return;
+    }
+
+    // Decidir si cantar envido (solo primera baza, primera jugada, y si no tiene flor)
     if (!this.envidoPlayed && this.turnManager.getBazaCount() === 0 && !this.turnManager.currentBaza.player && !this.turnManager.currentBaza.cpu) {
       if (cpu.shouldCallEnvido(cpu.getHand(), this.vira)) {
         this.callEnvido(cpuIndex, 'envido');
         return;
       }
-    }
-
-    // Declarar flor si la tiene (antes de truco, ya que es obligatorio)
-    if (!this.florPlayed && EnvidoCalc.hasFlor(cpu.getHand(), this.vira)) {
-      this.declareFlor(cpuIndex);
-      return;
     }
 
     // Decidir si cantar truco
@@ -1076,9 +1081,13 @@ export class GameEngine {
       // Los cantos (truco, envido, flor) y el irse al mazo
       // solo están disponibles en el propio turno
       if (isMyTurn) {
-        // Envido solo en primera baza
+        // Envido solo en primera baza, y no si el jugador tiene flor
         if (!this.envidoPlayed && this.turnManager.getBazaCount() === 0) {
-          actions.push('envido', 'envido_5', 'falta_envido');
+          const playerHand = this.players[playerIndex].getHand();
+          const playerHasFlor = EnvidoCalc.hasFlor(playerHand, this.vira);
+          if (!playerHasFlor) {
+            actions.push('envido', 'envido_5', 'falta_envido');
+          }
         }
 
         // Truco
@@ -1087,8 +1096,8 @@ export class GameEngine {
           if (nextTruco) actions.push(nextTruco);
         }
 
-        // Flor
-        if (!this.florPlayed && EnvidoCalc.hasFlor(this.players[playerIndex].getHand(), this.vira)) {
+        // Flor — solo primera baza
+        if (!this.florPlayed && this.turnManager.getBazaCount() === 0 && EnvidoCalc.hasFlor(this.players[playerIndex].getHand(), this.vira)) {
           actions.push('flor');
         }
 
