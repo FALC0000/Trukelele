@@ -9,10 +9,17 @@ desktop.ini
 *.suo
 *.user
 
-# Node (por si se agrega en el futuro)
+# Node & Next.js
 node_modules/
-npm-debug.log
+.next/
+out/
+build/
+tsconfig.tsbuildinfo
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
 
 # Archivos temporales
 *.log
 *.tmp
+

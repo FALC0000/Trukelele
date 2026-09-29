@@ -1,0 +1,308 @@
+/* ═══════════════════════════════════════════════════════════════
+   index.css — Sistema de Diseño Trukelele v4.0 Classic
+   Estilo: Casino Profesional · Club de Cartas · Elegante
+   Tipografía: Cinzel (Romano clásico) + IM Fell English (Cuerpo)
+   Paleta: Felt green · Gold dorado · Ivory · Caoba oscuro
+   ═══════════════════════════════════════════════════════════════ */
+
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700;900&family=IM+Fell+English:ital@0;1&family=Lato:wght@300;400;700&display=swap');
+
+/* ─── Design Tokens ─── */
+:root {
+  /* ═══ PALETA CANTINA / MESA DESGASTADA ═══ */
+
+  /* Fondos — Maderas oscuras, sombras profundas */
+  --bg-void:     #080503;
+  --bg-base:     #170e08;
+  --bg-elevated: #24160d;
+  --bg-surface:  #2c1e10;
+  --bg-card:     #e5d8b8;
+  --bg-panel:    #24160d;
+
+  /* Mesa de juego — Madera rayada de cantina */
+  --table-dark:  #170e08;
+  --table-mid:   #2c1e10;
+  --table-light: #4a3018;
+  --table-accent: #b43a28;
+  --table-felt: radial-gradient(
+    ellipse 100% 80% at 50% 50%,
+    #4a3018 0%,
+    #2c1e10 50%,
+    #170e08 85%,
+    #080503 100%
+  );
+
+  /* ═══ ORO CLÁSICO (no neon, verdadero) ═══ */
+  --gold-bright:  #C9A84C;   /* Oro brillante */
+  --gold-mid:     #B8942A;   /* Oro medio */
+  --gold-dark:    #8B6914;   /* Oro oscuro */
+  --gold-pale:    #E8D08A;   /* Oro pálido / ivory dorado */
+  --gold-glow:    rgba(201, 168, 76, 0.25);
+  --gold-shadow:  rgba(139, 105, 20, 0.4);
+
+  /* ═══ TONOS IVOIRE / CREMA ═══ */
+  --ivory:        #F5F0E8;   /* Marfil cálido */
+  --ivory-dim:    #D4C9B0;   /* Marfil atenuado */
+  --ivory-muted:  #A09070;   /* Marfil muy atenuado */
+
+  /* ═══ ROJOS CLÁSICOS (palos) ═══ */
+  --red-classic:  #8B1A1A;   /* Rojo vino profundo */
+  --red-bright:   #C0392B;   /* Rojo brillante */
+
+  /* ═══ PALOS (estilo carta clásica) ═══ */
+  --palo-oros:    #C9A84C;   /* Oro auténtico */
+  --palo-copas:   #9B2226;   /* Rojo vino oscuro */
+  --palo-espadas: #C8D4DA;   /* Plata gris acero */
+  --palo-bastos:  #5C7A3E;   /* Verde olivo terroso */
+
+  /* ═══ TEXTO ═══ */
+  --text-primary:   #F5F0E8;   /* Marfil */
+  --text-secondary: #C8B896;   /* Oro pálido */
+  --text-muted:     #7A6848;   /* Marrón dorado oscuro */
+  --text-accent:    #C9A84C;   /* Oro brillante */
+
+  /* ═══ BORDES ORNAMENTALES ═══ */
+  --border-gold:    rgba(201, 168, 76, 0.3);
+  --border-subtle:  rgba(255, 255, 255, 0.05);
+  --border-card:    rgba(201, 168, 76, 0.15);
+
+  /* ═══ GLASSMORPHISM CÁLIDO ═══ */
+  --glass-bg:      rgba(16, 13, 11, 0.85);
+  --glass-bg-warm: rgba(26, 20, 16, 0.9);
+  --glass-border:  rgba(201, 168, 76, 0.12);
+  --glass-blur:    blur(20px);
+  --glass-blur-sm: blur(10px);
+
+  /* ═══ SOMBRAS CLÁSICAS ═══ */
+  --shadow-sm:   0 2px 6px rgba(0, 0, 0, 0.5);
+  --shadow-md:   0 6px 20px rgba(0, 0, 0, 0.55);
+  --shadow-lg:   0 14px 40px rgba(0, 0, 0, 0.65);
+  --shadow-xl:   0 24px 60px rgba(0, 0, 0, 0.75);
+  --shadow-card: 0 8px 24px rgba(0, 0, 0, 0.6), 0 2px 6px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255,255,255,0.05);
+  --shadow-gold: 0 0 18px var(--gold-glow), 0 0 40px rgba(201, 168, 76, 0.1);
+  --shadow-inset-table: inset 0 0 120px rgba(0, 0, 0, 0.8), inset 0 0 40px rgba(0, 0, 0, 0.5);
+
+  /* ═══ BORDES REDONDEADOS ═══ */
+  --radius-xs:   2px;
+  --radius-sm:   4px;
+  --radius-md:   8px;
+  --radius-lg:   12px;
+  --radius-xl:   18px;
+  --radius-card: 10px;    /* Menos redondeado = más clásico */
+
+  /* ═══ TIPOGRAFÍA CLÁSICA ═══ */
+  --font-display: 'Cinzel', 'Times New Roman', serif;       /* Títulos: Romano clásico */
+  --font-body:    'Lato', 'Helvetica Neue', sans-serif;     /* Cuerpo: Limpio, legible */
+  --font-serif:   'IM Fell English', 'Georgia', serif;      /* Textos ornamentales */
+
+  /* ═══ TRANSICIONES SUAVES (no rápidas tipo gaming) ═══ */
+  --ease-out:     cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  --ease-in:      cubic-bezier(0.55, 0.055, 0.675, 0.19);
+  --ease-elegant: cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-fast:   180ms var(--ease-elegant);
+  --transition-normal: 320ms var(--ease-elegant);
+  --transition-slow:   500ms var(--ease-elegant);
+  --transition-spring: 400ms cubic-bezier(0.34, 1.2, 0.64, 1);
+
+  /* ═══ SPACING ═══ */
+  --space-1:  4px;
+  --space-2:  8px;
+  --space-3:  12px;
+  --space-4:  16px;
+  --space-5:  20px;
+  --space-6:  24px;
+  --space-8:  32px;
+  --space-10: 40px;
+  --space-12: 48px;
+  --space-16: 64px;
+
+  /* Legacy aliases */
+  --space-xs: var(--space-1);
+  --space-sm: var(--space-2);
+  --space-md: var(--space-4);
+  --space-lg: var(--space-6);
+  --space-xl: var(--space-8);
+  --space-2xl: var(--space-12);
+  --space-3xl: var(--space-16);
+
+  /* ═══ MAPPINGS LEGACY (compatibilidad) ═══ */
+  --color-bg-dark:        var(--bg-base);
+  --color-bg-medium:      var(--bg-elevated);
+  --color-bg-card:        var(--bg-card);
+  --color-bg-surface:     var(--bg-surface);
+  --color-table-felt:     var(--table-felt);
+  --color-gold:           var(--gold-bright);
+  --color-gold-dim:       var(--gold-dark);
+  --color-gold-glow:      var(--gold-glow);
+  --color-accent-red:     var(--red-bright);
+  --color-accent-green:   var(--felt-light);
+  --color-text-primary:   var(--text-primary);
+  --color-text-secondary: var(--text-secondary);
+  --color-text-muted:     var(--text-muted);
+  --color-text-gold:      var(--text-accent);
+  --color-oros-start:     var(--palo-oros);
+  --color-oros-end:       var(--gold-dark);
+  --color-copas-start:    var(--palo-copas);
+  --color-copas-end:      #7B1818;
+  --color-espadas-start:  var(--palo-espadas);
+  --color-espadas-end:    #8FA0AA;
+  --color-bastos-start:   var(--palo-bastos);
+  --color-bastos-end:     #3D5228;
+
+  /* Vars derivadas para animaciones */
+  --neon-gold:        var(--gold-bright);
+  --neon-gold-glow:   var(--gold-glow);
+  --neon-gold-2:      var(--gold-pale);
+  --neon-rose:        var(--red-bright);
+  --neon-rose-glow:   rgba(192, 57, 43, 0.35);
+  --neon-cyan:        var(--palo-espadas);
+  --neon-cyan-glow:   rgba(200, 212, 218, 0.2);
+  --green-primary:    var(--felt-light);
+  --green-glow:       rgba(18, 54, 28, 0.5);
+  --glass-border:     var(--glass-border);
+  --ease-spring:      var(--transition-spring);
+  --text-muted:       var(--text-muted);
+  --bg-void:          var(--bg-void);
+}
+
+/* ─── Reset ─── */
+*, *::before, *::after {
+  margin: 0; padding: 0; box-sizing: border-box;
+}
+
+html {
+  font-size: 16px;
+  scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  color-scheme: dark;
+}
+
+body {
+  font-family: var(--font-body);
+  color: var(--text-primary);
+  background: var(--bg-base);
+  min-height: 100vh;
+  min-height: 100dvh;
+  overflow: hidden;
+  line-height: 1.6;
+  display: flex;
+  flex-direction: row;
+}
+
+@media (max-width: 768px) {
+  :root {
+    --space-xs: 3px; --space-sm: 6px;
+    --space-md: 10px; --space-lg: 16px;
+    --space-xl: 20px; --space-2xl: 28px;
+  }
+  body { flex-direction: column; overflow: hidden; }
+}
+
+/* Tipografía heredada */
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-display);
+  font-weight: 600;
+  line-height: 1.25;
+  letter-spacing: 0.04em;
+  color: var(--text-primary);
+}
+
+button {
+  font-family: var(--font-body);
+  cursor: pointer; border: none; outline: none;
+  background: none; color: inherit; font-size: inherit;
+}
+
+img { display: block; max-width: 100%; }
+a { text-decoration: none; color: inherit; }
+
+/* ─── Utilidades ─── */
+.visually-hidden {
+  position: absolute; width: 1px; height: 1px;
+  padding: 0; margin: -1px; overflow: hidden;
+  clip: rect(0,0,0,0); white-space: nowrap; border: 0;
+}
+.flex-center { display: flex; align-items: center; justify-content: center; }
+.text-gold   { color: var(--gold-bright); }
+.text-muted  { color: var(--text-muted); }
+.font-serif  { font-family: var(--font-serif); }
+
+/* ─── Scrollbar clásica ─── */
+::-webkit-scrollbar { width: 5px; }
+::-webkit-scrollbar-track { background: var(--bg-elevated); }
+::-webkit-scrollbar-thumb {
+  background: var(--gold-dark);
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover { background: var(--gold-mid); }
+
+/* ─── Selection ─── */
+::selection { background: var(--gold-mid); color: var(--bg-void); }
+
+/* ─── Orla Ornamental (borde decorativo clásico) ─── */
+@keyframes border-beam {
+  0%   { background-position: 0% 50%; }
+  50%  { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* ═══ Textura de Madera Desgastada ═══ */
+.felt-texture::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: 
+    linear-gradient(90deg, rgba(0,0,0,0.03) 0%, rgba(0,0,0,0.03) 2px, transparent 2px, transparent 100%),
+    linear-gradient(0deg, rgba(0,0,0,0.05) 0%, rgba(0,0,0,0.05) 1px, transparent 1px, transparent 100%),
+    url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.08'/%3E%3C/svg%3E");
+  background-size: 120px 100%, 100% 12px, 200px 200px;
+  pointer-events: none;
+  z-index: 1;
+  opacity: 0.8;
+}
+
+/* ─── Divider dorado ornamental ─── */
+.divider-gold {
+  display: flex; align-items: center; gap: 0.6rem;
+  color: var(--gold-mid); font-size: 0.65rem; letter-spacing: 0.2em;
+}
+.divider-gold::before, .divider-gold::after {
+  content: ''; flex: 1; height: 1px;
+  background: linear-gradient(to right, transparent, var(--gold-mid), transparent);
+}
+
+/* ─── Animaciones: más suaves, menos agresivas ─── */
+@keyframes blobFloat1 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  50%       { transform: translate(20px, -15px) scale(1.03); }
+}
+@keyframes blobFloat2 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  50%       { transform: translate(-20px, 15px) scale(1.02); }
+}
+@keyframes blobFloat3 {
+  0%, 100% { transform: translate(-50%, -50%) scale(1); }
+  50%       { transform: translate(-48%, -52%) scale(1.02); }
+}
+
+/* ─── glitchTitle: aquí solo un fade suave (no glitch en estilo clásico) ─── */
+@keyframes glitchTitle {
+  0%, 94%, 100% { clip-path: inset(0 0 100% 0); }
+  95% { clip-path: inset(30% 0 60% 0); transform: translateX(-2px); }
+  97% { clip-path: inset(0 0 100% 0); transform: translateX(0); }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ─── Reduced-motion ─── */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

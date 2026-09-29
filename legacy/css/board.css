@@ -1,0 +1,454 @@
+/* ═══════════════════════════════════════════════════════════════
+   board.css v4.0 — Mesa de Juego Clásica
+   Estilo: Tapete de fieltro · Caoba · Casino de alta gama
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ─── Board Container ─── */
+.board-container {
+  display: flex;
+  flex-grow: 1;
+  height: 100vh;
+  background: var(--bg-void);
+  overflow: hidden;
+}
+
+/* ─── Área de la Mesa ─── */
+.table-area {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  overflow: hidden;
+  background: var(--table-felt);
+}
+
+/* Borde interior ornamental de la mesa (aro de caoba) */
+.table-area::before {
+  content: '';
+  position: absolute;
+  inset: 12px;
+  border: 2px solid rgba(139, 105, 20, 0.18);
+  border-radius: 24px;
+  pointer-events: none;
+  z-index: 2;
+  box-shadow: inset 0 0 60px rgba(0,0,0,0.35);
+}
+
+/* Orla / línea interna más fina */
+.table-area::after {
+  content: '';
+  position: absolute;
+  inset: 16px;
+  border: 1px solid rgba(139, 105, 20, 0.09);
+  border-radius: 21px;
+  pointer-events: none;
+  z-index: 2;
+}
+
+/* Vignette perimetral (luz centrada) */
+.table-area .vignette {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    ellipse 85% 85% at 50% 50%,
+    transparent 35%,
+    rgba(0,0,0,0.55) 100%
+  );
+  pointer-events: none;
+  z-index: 3;
+}
+
+/* ─── Player Areas ─── */
+.player-area {
+  padding: var(--space-md);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  z-index: 10;
+}
+
+.player-area--top {
+  height: 25%;
+  justify-content: flex-start;
+  padding-top: var(--space-6);
+}
+
+.player-area--bottom {
+  height: 35%;
+  justify-content: flex-end;
+  padding-bottom: var(--space-10);
+}
+
+/* ─── Player Info Chip — Estilo Placa de Cuero ─── */
+.player-info {
+  background: linear-gradient(145deg, #24160d, #170e08);
+  border: 1px solid #080503;
+  padding: 6px 18px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  margin-bottom: var(--space-2);
+  box-shadow:
+    2px 4px 6px rgba(0,0,0,0.85),
+    inset 1px 1px 1px rgba(255,255,255,0.05);
+  position: relative;
+}
+
+.player-info::after {
+  content: '';
+  position: absolute;
+  top: 4px; left: 4px; right: 4px; bottom: 4px;
+  border: 1px dashed rgba(229, 216, 184, 0.15);
+  pointer-events: none;
+  border-radius: 2px;
+}
+
+.player-area--top .player-info {
+  margin-bottom: 0;
+  margin-top: var(--space-2);
+}
+
+.player-name {
+  font-family: var(--font-display);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  color: var(--ivory);
+  text-transform: uppercase;
+}
+
+.player-status {
+  font-family: var(--font-body);
+  font-size: 0.58rem;
+  color: var(--gold-mid);
+  letter-spacing: 0.08em;
+  font-weight: 400;
+}
+
+/* ─── Centro de la mesa ─── */
+.play-area {
+  flex-grow: 1;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 5;
+}
+
+.play-zone {
+  position: relative;
+  width: 300px;
+  height: 200px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Círculo de juego — estilo mesa de casino */
+.play-zone::before {
+  content: '';
+  position: absolute;
+  width: 200px;
+  height: 120px;
+  border-radius: 50%;
+  border: 1px solid rgba(201, 168, 76, 0.12);
+  pointer-events: none;
+}
+
+.play-zone::after {
+  content: '';
+  position: absolute;
+  width: 210px;
+  height: 130px;
+  border-radius: 50%;
+  border: 1px dashed rgba(201, 168, 76, 0.06);
+  pointer-events: none;
+}
+
+/* ─── Cartas jugadas ─── */
+.played-card { position: absolute; transition: all var(--transition-spring); }
+
+.played-card--p1 {
+  bottom: 10%; left: 50%;
+  transform: translateX(calc(-50% + var(--rand-x, 0px))) translateY(var(--rand-y, 0px)) rotate(calc(-4deg + var(--rand-r, 0deg)));
+  z-index: 2;
+}
+
+.played-card--p2 {
+  top: 10%; left: 50%;
+  transform: translateX(calc(-50% + var(--rand-x, 0px))) translateY(var(--rand-y, 0px)) rotate(calc(4deg + var(--rand-r, 0deg)));
+  z-index: 1;
+}
+
+.played-card--p3 {
+  left: 10%; top: 50%;
+  transform: translateX(var(--rand-x, 0px)) translateY(calc(-50% + var(--rand-y, 0px))) rotate(calc(85deg + var(--rand-r, 0deg)));
+  z-index: 1;
+}
+
+.played-card--p4 {
+  right: 10%; top: 50%;
+  transform: translateX(var(--rand-x, 0px)) translateY(calc(-50% + var(--rand-y, 0px))) rotate(calc(-85deg + var(--rand-r, 0deg)));
+  z-index: 1;
+}
+
+/* ─── Historial de Bazas ─── */
+.baza-history {
+  position: absolute;
+  left: 20px;
+  bottom: 90px;
+  background: rgba(12, 10, 8, 0.92);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(201, 168, 76, 0.15);
+  border-radius: var(--radius-md);
+  padding: 8px 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  z-index: 10;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.6);
+}
+
+.baza-history__title {
+  font-family: var(--font-display);
+  font-size: 0.52rem;
+  color: var(--gold-mid);
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  font-weight: 600;
+  text-align: center;
+}
+
+.baza-history__list { display: flex; gap: var(--space-2); }
+
+.baza-history-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+
+.baza-history-item__label {
+  font-family: var(--font-body);
+  font-size: 0.47rem;
+  color: var(--text-muted);
+  letter-spacing: 0.05em;
+}
+
+.baza-history-item__cards { display: flex; gap: 2px; }
+
+.baza-mini-card {
+  width: 24px;
+  height: 34px;
+  border-radius: 4px;
+  font-size: 0.46rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-family: var(--font-display);
+  transition: all var(--transition-fast);
+
+  /* Carta mini: marfil */
+  background: linear-gradient(160deg, #F8F2E8, #EDE4CF);
+  border: 1px solid rgba(0,0,0,0.12);
+  color: #1A1008;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.5);
+}
+
+.baza-mini-card[data-palo="oros"]    { color: #8B6914; }
+.baza-mini-card[data-palo="copas"]   { color: #8B1A1A; }
+.baza-mini-card[data-palo="espadas"] { color: #1A1A1A; }
+.baza-mini-card[data-palo="bastos"]  { color: #2D4A1E; }
+
+.baza-mini-card--winner {
+  box-shadow: 0 0 8px rgba(201,168,76,0.4), 0 2px 6px rgba(0,0,0,0.5);
+  border-color: rgba(201,168,76,0.5);
+}
+
+/* ─── Vira ─── */
+.vira-container {
+  position: absolute;
+  right: 24px;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-md);
+  z-index: 8;
+}
+
+.deck-stack { position: relative; width: 88px; height: 128px; }
+
+.deck-card {
+  position: absolute;
+  top: 0; left: 0;
+  box-shadow: -2px 2px 6px rgba(0,0,0,0.6);
+}
+
+.deck-card:nth-child(1) { transform: translate(-2px, -2px); }
+.deck-card:nth-child(2) { transform: translate(-4px, -4px); }
+.deck-card:nth-child(3) { transform: translate(-6px, -6px); }
+
+.vira-slot { position: absolute; left: -58px; top: 0; }
+
+/* Etiqueta "VIRA" debajo de la carta */
+.vira-label {
+  font-family: var(--font-display);
+  font-size: 0.52rem;
+  color: var(--gold-mid);
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  text-align: center;
+  margin-top: 6px;
+}
+
+/* ─── Barra de Acciones ─── */
+.control-bar {
+  position: absolute;
+  bottom: 14px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  justify-content: center;
+  z-index: 20;
+  max-width: calc(100vw - 32px);
+  padding: 0 8px;
+}
+
+.btn-action {
+  background: linear-gradient(180deg, #3d2412, #2c1e10);
+  border: 1px solid #170e08;
+  color: #e5d8b8;
+  padding: 10px 24px;
+  border-radius: 6px;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 0.75rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  transition: all var(--transition-fast);
+  box-shadow: 
+    0 4px 6px rgba(0,0,0,0.8),
+    0 2px 2px rgba(0,0,0,0.9),
+    inset 0 1px 1px rgba(255,255,255,0.1);
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+}
+
+.btn-action:hover:not(:disabled) {
+  background: linear-gradient(180deg, #4a3018, #3d2412);
+  color: #fff;
+  transform: translateY(-2px);
+  box-shadow: 
+    0 6px 8px rgba(0,0,0,0.9),
+    0 2px 4px rgba(0,0,0,0.9),
+    inset 0 1px 1px rgba(255,255,255,0.15);
+}
+
+.btn-action:active:not(:disabled) {
+  transform: translateY(2px);
+  box-shadow: 
+    0 1px 2px rgba(0,0,0,0.9),
+    inset 0 2px 4px rgba(0,0,0,0.6);
+}
+
+.btn-action:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: translateY(0);
+}
+
+/* Botón primario — Rojo Cantina */
+.btn-action--primary {
+  background: linear-gradient(180deg, #c0392b, #8b1a1a);
+  color: #f5f0e8;
+  border-color: #4a0d0d;
+}
+
+.btn-action--primary:hover:not(:disabled) {
+  background: linear-gradient(180deg, #d35400, #c0392b);
+}
+
+.btn-action--danger:hover:not(:disabled) {
+  background: linear-gradient(180deg, #e74c3c, #c0392b);
+}
+
+.btn-action[data-action="fold_hand"] {
+  background: linear-gradient(180deg, #24160d, #170e08);
+  color: #a09070;
+}
+
+.btn-action[data-action="fold_hand"]:hover:not(:disabled) {
+  color: #e74c3c;
+}
+
+/* ─── Transición de turno (2v2) ─── */
+.turn-transition {
+  position: absolute;
+  inset: 0;
+  background: rgba(7, 5, 4, 0.96);
+  backdrop-filter: blur(18px);
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-6);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--transition-normal);
+}
+
+.turn-transition.is-active { opacity: 1; pointer-events: all; }
+
+.turn-transition__title {
+  font-family: var(--font-display);
+  font-size: 2.2rem;
+  color: var(--gold-bright);
+  letter-spacing: 0.1em;
+  font-weight: 700;
+}
+
+.turn-transition__text {
+  font-size: 1rem;
+  color: var(--text-secondary);
+  font-family: var(--font-body);
+  font-weight: 300;
+}
+
+/* ─── Mobile ─── */
+@media (max-width: 768px) {
+  .board-container { height: 100dvh; overflow: hidden; }
+  .table-area::before { inset: 6px; border-radius: 14px; }
+  .table-area::after  { inset: 9px; border-radius: 12px; }
+
+  .player-area--top    { height: 22%; padding-top: 10px; }
+  .player-area--bottom { height: 32%; padding-bottom: 82px; }
+  .play-area { flex-grow: 1; }
+  .play-zone { width: 200px; height: 150px; }
+  .vira-container { right: 10px; }
+  .deck-stack { width: 58px; height: 84px; }
+  .vira-slot { left: -36px; }
+
+  .baza-history { left: 10px; bottom: 56px; padding: 6px 8px; }
+  .baza-mini-card { width: 20px; height: 28px; font-size: 0.4rem; }
+
+  .control-bar {
+    bottom: 4px; max-width: 100vw; padding: 4px 8px 8px;
+    gap: 5px; flex-wrap: nowrap; overflow-x: auto; justify-content: flex-start;
+    -webkit-overflow-scrolling: touch;
+  }
+  .btn-action { padding: 7px 14px; font-size: 0.65rem; flex-shrink: 0; white-space: nowrap; }
+  .player-info { padding: 4px 12px; }
+  .player-name { font-size: 0.67rem; }
+}

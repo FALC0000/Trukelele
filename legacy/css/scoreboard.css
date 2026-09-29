@@ -1,0 +1,203 @@
+/* ═══════════════════════════════════════════════════════════════
+   scoreboard.css v4.0 — Marcador Clásico de Casino
+   Estilo: Panel de caoba · Fósforos de cuero · Oro real
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ─── Panel Principal ─── */
+.scoreboard-panel {
+  width: 280px;
+  background: var(--bg-panel);
+  border-left: 1px solid rgba(201, 168, 76, 0.15);
+  display: flex;
+  flex-direction: column;
+  z-index: 30;
+  box-shadow: -6px 0 30px rgba(0, 0, 0, 0.6);
+  position: relative;
+}
+
+/* Línea ornamental superior */
+.scoreboard-panel::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 20%; right: 20%;
+  height: 1px;
+  background: linear-gradient(90deg,
+    transparent,
+    rgba(201, 168, 76, 0.4) 50%,
+    transparent
+  );
+}
+
+/* ─── Mobile ─── */
+@media (max-width: 768px) {
+  .scoreboard-panel {
+    display: none;
+  }
+}
+
+/* ─── Header ─── */
+.scoreboard-header {
+  padding: var(--space-5) var(--space-6);
+  border-bottom: 1px solid rgba(201, 168, 76, 0.1);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.scoreboard-title {
+  font-family: var(--font-display);
+  font-size: 0.8rem;
+  color: var(--gold-mid);
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  font-weight: 600;
+}
+
+.scoreboard-target {
+  font-family: var(--font-body);
+  font-size: 0.65rem;
+  color: var(--text-muted);
+  background: rgba(255, 255, 255, 0.03);
+  padding: 2px 8px;
+  border-radius: 100px;
+  border: 1px solid rgba(201, 168, 76, 0.12);
+}
+
+/* ─── Teams ─── */
+.scoreboard-teams {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  padding: var(--space-5);
+  gap: var(--space-8);
+  overflow-y: auto;
+}
+
+.team-score { display: flex; flex-direction: column; gap: var(--space-3); }
+
+.team-score__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  padding-bottom: var(--space-2);
+  border-bottom: 1px solid rgba(201, 168, 76, 0.1);
+}
+
+.team-score__name {
+  font-family: var(--font-display);
+  font-size: 0.82rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  color: var(--ivory);
+}
+
+.team-score__points {
+  font-family: var(--font-display);
+  font-size: 1.7rem;
+  font-weight: 700;
+  color: var(--gold-bright);
+  letter-spacing: -0.02em;
+  text-shadow: 0 2px 10px rgba(139,105,20,0.25);
+}
+
+/* ─── Fósforos (porotos) — Tokens Físicos Cantina ─── */
+.tally-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-4);
+  margin-top: var(--space-2);
+}
+
+.tally-group {
+  position: relative;
+  width: 38px;
+  height: 38px;
+}
+
+.tally-line {
+  position: absolute;
+  background: linear-gradient(90deg, #5c3a21, #8B6914, #3d2412);
+  border-radius: 3px;
+  box-shadow: 2px 2px 4px rgba(0,0,0,0.8), 1px 1px 1px rgba(0,0,0,0.9);
+}
+
+/* Cabeza del fósforo — Roja encendida apagada */
+.tally-line::after {
+  content: '';
+  position: absolute;
+  width: 7px;
+  height: 8px;
+  background: radial-gradient(circle at 30% 30%, #b43a28, #5a1d14);
+  border-radius: 50% 50% 40% 40%;
+  box-shadow: 1px 2px 3px rgba(0,0,0,0.8);
+  top: -3px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.tally-line--1 { width: 4px; height: 30px; left: 3px;  top: 2px; transform: rotate(-4deg); }
+.tally-line--2 { width: 4px; height: 30px; left: 11px; top: 4px; transform: rotate(2deg); }
+.tally-line--3 { width: 4px; height: 30px; left: 20px; top: 2px; transform: rotate(7deg); }
+.tally-line--4 { width: 4px; height: 30px; left: 28px; top: 0;   transform: rotate(-3deg); }
+.tally-line--5 {
+  width: 4px; height: 40px;
+  left: 16px; top: -4px;
+  transform: rotate(68deg);
+  z-index: 2;
+  background: linear-gradient(90deg, #3d2412, #8B6914, #5c3a21);
+  box-shadow: 3px 3px 6px rgba(0,0,0,0.9);
+}
+
+/* Divisor MALAS / BUENAS */
+.tally-divider {
+  width: 100%;
+  height: 1px;
+  background: rgba(255, 255, 255, 0.05);
+  margin: 4px 0;
+  position: relative;
+}
+
+.tally-divider::after {
+  content: 'MALAS';
+  position: absolute;
+  right: 0; top: -6px;
+  font-family: var(--font-body);
+  font-size: 0.48rem;
+  color: var(--text-muted);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.tally-container--buenas .tally-divider::after { content: 'BUENAS'; }
+
+/* ─── Historial de jugadas ─── */
+.history-panel {
+  height: 140px;
+  background: rgba(0, 0, 0, 0.3);
+  border-top: 1px solid rgba(201, 168, 76, 0.1);
+  padding: var(--space-3) var(--space-4);
+  overflow-y: auto;
+  font-size: 0.75rem;
+}
+
+.history-item {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 4px;
+  color: var(--text-muted);
+  font-family: var(--font-body);
+  font-size: 0.7rem;
+}
+
+.history-item__team {
+  font-weight: 600;
+  color: var(--text-secondary);
+  font-family: var(--font-display);
+  font-size: 0.65rem;
+  letter-spacing: 0.05em;
+}
+
+.history-item__points {
+  color: var(--gold-mid);
+  font-weight: 700;
+}

@@ -1,0 +1,146 @@
+/* ═══════════════════════════════════════════════════════════════
+   animations.css v4.0 — Animaciones Elegantes
+   Estilo: Casino Clásico — suaves, precisas, nada exageradas
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ─── Repartir Cartas ─── */
+@keyframes dealCard {
+  0% {
+    transform: translate(300px, -200px) scale(0.5) rotate(90deg);
+    opacity: 0;
+  }
+  70% {
+    opacity: 1;
+  }
+  85% {
+    transform: translate(-4px, 4px) scale(1.01) rotate(-1deg);
+  }
+  100% {
+    transform: translate(0, 0) scale(1) rotate(0deg);
+    opacity: 1;
+  }
+}
+
+.anim-deal {
+  animation: dealCard 0.5s cubic-bezier(0.34, 1.2, 0.64, 1) forwards;
+}
+
+.anim-deal-1 { animation-delay: 0.08s; opacity: 0; }
+.anim-deal-2 { animation-delay: 0.2s;  opacity: 0; }
+.anim-deal-3 { animation-delay: 0.32s; opacity: 0; }
+
+/* ─── Jugar Carta ─── */
+@keyframes playCard {
+  0% {
+    transform: translateY(0) scale(1);
+  }
+  35% {
+    transform: translateY(-50px) scale(1.08);
+    filter: brightness(1.15);
+    z-index: 100;
+  }
+  100% {
+    transform: translate(var(--target-x, 0), var(--target-y, 0))
+               rotate(var(--target-r, 0)) scale(1);
+    filter: brightness(1);
+  }
+}
+
+.anim-play {
+  animation: playCard 0.45s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+  pointer-events: none;
+}
+
+/* ─── Recoger Baza ─── */
+@keyframes sweepBazaP1 {
+  0%   { transform: scale(1); opacity: 1; }
+  30%  { transform: scale(1.06) rotate(-3deg); filter: brightness(1.2); }
+  100% { transform: translate(-220px, 300px) scale(0.4) rotate(-40deg); opacity: 0; }
+}
+
+@keyframes sweepBazaP2 {
+  0%   { transform: scale(1); opacity: 1; }
+  30%  { transform: scale(1.06) rotate(3deg); filter: brightness(1.2); }
+  100% { transform: translate(220px, -300px) scale(0.4) rotate(40deg); opacity: 0; }
+}
+
+.anim-sweep-p1 { animation: sweepBazaP1 0.6s var(--ease-in) forwards; }
+.anim-sweep-p2 { animation: sweepBazaP2 0.6s var(--ease-in) forwards; }
+
+/* ─── Score Pop ─── */
+@keyframes scorePop {
+  0%   { transform: scale(1); }
+  40%  { transform: scale(1.35) translateY(-3px); color: var(--gold-bright); }
+  70%  { transform: scale(0.97); }
+  100% { transform: scale(1); }
+}
+
+.anim-score-pop { animation: scorePop 0.55s var(--transition-spring) forwards; }
+
+/* ─── Dialog Pop ─── */
+@keyframes dialogPopIn {
+  0%   { opacity: 0; transform: scale(0.9) translateY(18px); }
+  65%  { transform: scale(1.01) translateY(-1px); }
+  100% { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+/* ─── Turn Pulse — Oro suave ─── */
+@keyframes pulseTurn {
+  0%   { box-shadow: 0 0 0 0 rgba(201, 168, 76, 0.4); }
+  60%  { box-shadow: 0 0 0 8px rgba(201, 168, 76, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(201, 168, 76, 0); }
+}
+
+.is-turn .player-info {
+  border-color: var(--gold-bright) !important;
+  animation: pulseTurn 2.2s ease infinite;
+}
+
+/* ─── Fade general ─── */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.anim-fade-in { animation: fadeIn 0.35s var(--ease-elegant) forwards; }
+
+/* ─── Card Flip ─── */
+@keyframes cardFlipIn {
+  0%   { transform: rotateY(90deg) scale(0.92); opacity: 0; }
+  55%  { transform: rotateY(-3deg) scale(1.01); opacity: 1; }
+  100% { transform: rotateY(0) scale(1); opacity: 1; }
+}
+
+.anim-flip-in { animation: cardFlipIn 0.48s var(--transition-spring) forwards; }
+
+/* ─── Winner ─── */
+@keyframes winnerPulse {
+  0%, 100% { box-shadow: var(--shadow-card); }
+  50%       { box-shadow: 0 0 24px var(--gold-glow), 0 0 48px rgba(201,168,76,0.15); }
+}
+
+.card--winner {
+  animation: winnerPulse 1.2s ease infinite;
+  border-color: var(--gold-bright) !important;
+}
+
+/* ─── Entrada suave de sección ─── */
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(14px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ─── Partículas al ganar baza ─── */
+@keyframes particleBurst {
+  0%   { transform: translate(0,0) scale(1); opacity: 0.9; }
+  100% { transform: translate(var(--px), var(--py)) scale(0); opacity: 0; }
+}
+
+.particle {
+  position: absolute;
+  width: 5px; height: 5px;
+  border-radius: 50%;
+  background: var(--gold-bright);
+  animation: particleBurst 0.65s var(--ease-in) forwards;
+  pointer-events: none;
+}

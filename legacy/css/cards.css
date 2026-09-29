@@ -1,0 +1,283 @@
+/* ═══════════════════════════════════════════════════════════════
+   cards.css v4.0 — Cartas de Baraja Clásica Profesional
+   Estilo: Casino de alta gama · Caoba · Oro real · Marfil
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ─── Carta Base ─── */
+.card {
+  position: relative;
+  width: 86px;
+  height: 126px;
+  border-radius: var(--radius-card);
+  background: linear-gradient(160deg, #F0E6D2 0%, #E8DCC0 50%, #D4C4A0 100%);
+  border: 1px solid rgba(0, 0, 0, 0.4);
+  /* Sombras duras de contacto sobre la madera */
+  box-shadow:
+    2px 3px 2px rgba(0, 0, 0, 0.85),
+    1px 1px 4px rgba(0, 0, 0, 0.7),
+    inset 1px 1px 0 rgba(255, 255, 255, 0.6),
+    inset -1px -1px 0 rgba(0, 0, 0, 0.15);
+  cursor: pointer;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  transform-style: preserve-3d;
+  transition:
+    transform var(--transition-normal),
+    box-shadow var(--transition-normal),
+    filter var(--transition-normal);
+  color: #1A1008;
+  image-rendering: -webkit-optimize-contrast; /* Mejor nitidez en webkit */
+  image-rendering: crisp-edges;
+}
+
+/* Marco interior ornamental (más desgastado) */
+.card::before {
+  content: '';
+  position: absolute;
+  inset: 4px;
+  border: 1px solid rgba(44, 30, 16, 0.25);
+  border-radius: calc(var(--radius-card) - 3px);
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* Cartulina gruesa texturizada */
+.card::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='paperNoise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='1.2' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23paperNoise)' opacity='0.15'/%3E%3C/svg%3E");
+  border-radius: inherit;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ─── Número de la carta ─── */
+.card__number {
+  position: relative;
+  z-index: 2;
+  font-family: var(--font-display);
+  font-size: 1.9rem;
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -0.02em;
+}
+
+/* ─── Símbolo del palo ─── */
+.card__symbol {
+  position: relative;
+  z-index: 2;
+  font-size: 1.5rem;
+  margin-top: 2px;
+  line-height: 1;
+}
+
+/* ─── Nombre del palo ─── */
+.card__name {
+  position: relative;
+  z-index: 2;
+  font-family: var(--font-serif);
+  font-size: 0.45rem;
+  color: rgba(26, 16, 8, 0.45);
+  margin-top: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-style: italic;
+}
+
+/* ─── Corner Indicators ─── */
+.card__corner {
+  position: absolute;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  line-height: 1;
+  font-family: var(--font-display);
+  font-weight: 600;
+}
+
+.card__corner--top    { top: 5px; left: 6px; }
+.card__corner--bottom { bottom: 5px; right: 6px; transform: rotate(180deg); }
+.card__corner-number  { font-size: 0.62rem; }
+.card__corner-symbol  { font-size: 0.55rem; margin-top: -1px; }
+
+/* ─── Colores por palo ─── */
+/* Oros / Diamantes — dorado */
+.card[data-palo="oros"] .card__number,
+.card[data-palo="oros"] .card__symbol,
+.card[data-palo="oros"] .card__corner { color: #8B6914; }
+
+/* Copas / Corazones — rojo vino */
+.card[data-palo="copas"] .card__number,
+.card[data-palo="copas"] .card__symbol,
+.card[data-palo="copas"] .card__corner { color: #8B1A1A; }
+
+/* Espadas — negro grafito */
+.card[data-palo="espadas"] .card__number,
+.card[data-palo="espadas"] .card__symbol,
+.card[data-palo="espadas"] .card__corner { color: #1A1A1A; }
+
+/* Bastos — verde oscuro */
+.card[data-palo="bastos"] .card__number,
+.card[data-palo="bastos"] .card__symbol,
+.card[data-palo="bastos"] .card__corner { color: #2D4A1E; }
+
+/* ─── Hover — Elevación física ─── */
+.card:hover:not(.card--played):not(.card--disabled) {
+  transform: perspective(900px) translateY(-8px) scale(1.02) rotateX(5deg);
+  z-index: 20;
+  box-shadow:
+    4px 10px 6px rgba(0, 0, 0, 0.75),
+    2px 4px 12px rgba(0, 0, 0, 0.6),
+    0 0 0 1px rgba(0, 0, 0, 0.5),
+    inset 1px 1px 0 rgba(255, 255, 255, 0.7);
+}
+
+/* ─── Seleccionada ─── */
+.card--selected {
+  transform: perspective(900px) translateY(-12px) scale(1.04) !important;
+  box-shadow:
+    6px 14px 8px rgba(0, 0, 0, 0.8),
+    3px 6px 16px rgba(0, 0, 0, 0.6),
+    0 0 0 2px #5c3a21,
+    inset 1px 1px 0 rgba(255,255,255,0.8) !important;
+  z-index: 20;
+}
+
+/* ─── Jugada ─── */
+.card--played { cursor: default; }
+
+/* ─── Deshabilitada ─── */
+.card--disabled {
+  cursor: not-allowed;
+  opacity: 0.4;
+  filter: grayscale(0.4) brightness(0.85);
+}
+
+/* ─── Especial (Perico / Perica) ─── */
+@keyframes goldStar {
+  0%, 100% { opacity: 0.8; transform: scale(1) rotate(0); }
+  50%       { opacity: 1;   transform: scale(1.2) rotate(10deg); }
+}
+
+.card--special {
+  box-shadow:
+    0 6px 18px rgba(0,0,0,0.7),
+    0 0 12px rgba(201,168,76,0.2),
+    inset 0 1px 0 rgba(255,255,255,0.8);
+}
+
+/* Estrella ornamental en esquina */
+.card--special .card__corner--top::after {
+  content: '✦';
+  display: block;
+  font-size: 0.45rem;
+  color: var(--gold-mid);
+  animation: goldStar 2s ease-in-out infinite;
+}
+
+/* ─── Facedown (dorso de la carta) ─── */
+.card--facedown {
+  cursor: default;
+  background: linear-gradient(160deg, #1E1408 0%, #150F08 100%);
+  border-color: rgba(201, 168, 76, 0.25);
+  box-shadow:
+    0 6px 18px rgba(0, 0, 0, 0.8),
+    0 2px 6px rgba(0, 0, 0, 0.5),
+    inset 0 1px 0 rgba(201, 168, 76, 0.1);
+}
+
+/* Patrón de dorso: cuadrícula ornamental */
+.card--facedown::before {
+  border-color: rgba(201, 168, 76, 0.12);
+}
+
+.card--facedown::after {
+  background-image:
+    repeating-linear-gradient(
+      45deg,
+      rgba(201, 168, 76, 0.04) 0px,
+      rgba(201, 168, 76, 0.04) 1px,
+      transparent 1px, transparent 8px
+    ),
+    repeating-linear-gradient(
+      -45deg,
+      rgba(201, 168, 76, 0.04) 0px,
+      rgba(201, 168, 76, 0.04) 1px,
+      transparent 1px, transparent 8px
+    );
+}
+
+.card--facedown .card__number,
+.card--facedown .card__symbol,
+.card--facedown .card__name,
+.card--facedown .card__corner { display: none; }
+
+.card--facedown-center {
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 1.6rem;
+  opacity: 0.12;
+  color: var(--gold-bright);
+}
+
+/* ─── Vira ─── */
+.card--vira {
+  transform: rotate(-6deg);
+  box-shadow:
+    0 8px 24px rgba(0,0,0,0.8),
+    0 0 0 1px var(--gold-mid),
+    0 0 18px var(--gold-glow);
+}
+
+/* ─── Mano del jugador — Fan layout ─── */
+.hand {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  padding: var(--space-md);
+  perspective: 900px;
+}
+
+.hand .card:nth-child(1) { transform: rotate(-4deg) translateY(5px); }
+.hand .card:nth-child(2) { transform: rotate(0deg); }
+.hand .card:nth-child(3) { transform: rotate(4deg) translateY(5px); }
+
+.hand .card:hover:not(.card--disabled) {
+  transform: perspective(900px) translateY(-16px) scale(1.04) rotate(0deg) rotateX(5deg) !important;
+  z-index: 20;
+}
+
+/* ─── Mano CPU ─── */
+.hand--cpu { pointer-events: none; }
+.hand--cpu .card:nth-child(1) { transform: rotate(4deg) translateY(5px); }
+.hand--cpu .card:nth-child(2) { transform: rotate(0deg); }
+.hand--cpu .card:nth-child(3) { transform: rotate(-4deg) translateY(5px); }
+
+/* ─── Mobile ─── */
+@media (max-width: 768px) {
+  .card { width: 62px; height: 90px; border-radius: 8px; }
+  .card__number { font-size: 1.3rem; }
+  .card__symbol { font-size: 1rem; }
+  .card__name   { font-size: 0.38rem; }
+  .card__corner-number { font-size: 0.52rem; }
+  .card__corner-symbol { font-size: 0.46rem; }
+
+  .hand { gap: 5px; padding: var(--space-sm); }
+  .hand .card:nth-child(1) { transform: rotate(-3deg) translateY(4px); }
+  .hand .card:nth-child(3) { transform: rotate(3deg) translateY(4px); }
+  .hand .card:hover:not(.card--disabled),
+  .hand .card:active:not(.card--disabled) {
+    transform: perspective(900px) translateY(-12px) scale(1.04) rotate(0deg) !important;
+  }
+  .hand--cpu .card:nth-child(1) { transform: rotate(3deg) translateY(4px); }
+  .hand--cpu .card:nth-child(3) { transform: rotate(-3deg) translateY(4px); }
+}

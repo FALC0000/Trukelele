@@ -1,0 +1,209 @@
+/* ═══════════════════════════════════════════════════════════════
+   dialogs.css v4.0 — Diálogos Clásicos Profesionales
+   Estilo: Club privado · Pergamino dorado · Caoba
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ─── Overlay ─── */
+.dialog-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(7, 5, 4, 0.75);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  z-index: 1000;
+  display: flex;
+  align-items: flex-start;
+  padding-top: 14vh;
+  justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--transition-normal);
+}
+
+.dialog-overlay.is-active {
+  opacity: 1;
+  pointer-events: all;
+}
+
+/* ─── Dialog Box ─── */
+.dialog-box {
+  background: var(--bg-elevated);
+  border: 1px solid rgba(201, 168, 76, 0.22);
+  border-top: 1px solid rgba(201, 168, 76, 0.35);
+  border-radius: var(--radius-xl);
+  padding: var(--space-8);
+  max-width: 400px;
+  width: 90%;
+  box-shadow:
+    0 24px 60px rgba(0, 0, 0, 0.75),
+    0 0 0 1px rgba(0,0,0,0.5),
+    inset 0 1px 0 rgba(255,255,255,0.03);
+  text-align: center;
+  animation: dialogPopIn 0.38s cubic-bezier(0.34, 1.2, 0.64, 1) forwards;
+}
+
+/* Línea ornamental superior dentro del diálogo */
+.dialog-box::before {
+  content: '';
+  display: block;
+  width: 60px;
+  height: 1px;
+  background: linear-gradient(to right, transparent, var(--gold-mid), transparent);
+  margin: 0 auto 1.2rem;
+}
+
+/* ─── Canto Alert — Pergamino de canto ─── */
+.canto-alert {
+  background: rgba(8, 6, 4, 0.6);
+  border: 1px solid rgba(201, 168, 76, 0.28);
+  border-radius: var(--radius-lg);
+  padding: var(--space-5) var(--space-8);
+  margin-bottom: var(--space-6);
+  position: relative;
+  box-shadow:
+    inset 0 0 30px rgba(201, 168, 76, 0.03),
+    0 2px 8px rgba(0,0,0,0.4);
+}
+
+/* Ornamento inferior (punta de pergamino) */
+.canto-alert::after {
+  content: '';
+  position: absolute;
+  bottom: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  border-width: 10px 10px 0;
+  border-style: solid;
+  border-color: rgba(201, 168, 76, 0.28) transparent transparent;
+  z-index: 2;
+}
+
+.canto-caller {
+  font-family: var(--font-body);
+  font-size: 0.65rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  margin-bottom: 6px;
+  font-weight: 400;
+}
+
+.canto-text {
+  font-family: var(--font-display);
+  font-size: 1.9rem;
+  font-weight: 700;
+  color: var(--gold-bright);
+  line-height: 1.1;
+  letter-spacing: 0.08em;
+  text-shadow: 0 2px 12px rgba(139,105,20,0.3);
+}
+
+/* ─── Actions ─── */
+.dialog-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-3);
+  margin-top: var(--space-6);
+}
+
+.dialog-actions--full { grid-template-columns: 1fr; }
+
+.btn-dialog {
+  padding: 10px var(--space-5);
+  border-radius: var(--radius-md);
+  font-family: var(--font-display);
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  transition: all var(--transition-fast);
+  border: 1px solid transparent;
+}
+
+.btn-dialog:hover { transform: translateY(-1px); }
+.btn-dialog:active { transform: translateY(0); }
+
+/* Aceptar — verde fieltro oscuro con borde dorado */
+.btn-dialog--accept {
+  background: linear-gradient(135deg, #0E2B16, #12361C);
+  color: var(--ivory-dim);
+  border-color: rgba(18, 54, 28, 0.6);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.4);
+}
+
+.btn-dialog--accept:hover {
+  background: linear-gradient(135deg, #12361C, #163D20);
+  border-color: rgba(201, 168, 76, 0.3);
+  box-shadow: 0 4px 14px rgba(0,0,0,0.5), 0 0 10px rgba(18,54,28,0.3);
+  color: var(--ivory);
+}
+
+/* Rechazar — rojo oscuro */
+.btn-dialog--reject {
+  background: linear-gradient(135deg, #4A0E0E, #5C1212);
+  color: var(--ivory-dim);
+  border-color: rgba(139, 26, 26, 0.5);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.4);
+}
+
+.btn-dialog--reject:hover {
+  background: linear-gradient(135deg, #5C1212, #701616);
+  border-color: rgba(192, 57, 43, 0.4);
+  color: var(--ivory);
+  box-shadow: 0 4px 14px rgba(0,0,0,0.5);
+}
+
+/* Subir — borde dorado */
+.btn-dialog--raise {
+  background: transparent;
+  border-color: rgba(201, 168, 76, 0.35);
+  color: var(--gold-mid);
+}
+
+.btn-dialog--raise:hover {
+  background: rgba(139, 105, 20, 0.1);
+  border-color: var(--gold-mid);
+  color: var(--gold-bright);
+  box-shadow: 0 0 14px rgba(201,168,76,0.15);
+}
+
+/* ─── Resultado de ronda ─── */
+.result-title {
+  font-family: var(--font-display);
+  font-size: 2.2rem;
+  color: var(--gold-bright);
+  margin-bottom: 6px;
+  letter-spacing: 0.08em;
+  font-weight: 700;
+  text-shadow: 0 2px 14px rgba(139,105,20,0.25);
+}
+
+.result-subtitle {
+  font-size: 0.95rem;
+  color: var(--text-secondary);
+  margin-bottom: var(--space-6);
+  font-family: var(--font-body);
+  font-weight: 300;
+}
+
+.result-points {
+  font-family: var(--font-display);
+  font-size: 3.2rem;
+  font-weight: 700;
+  color: var(--ivory);
+  margin: var(--space-6) 0;
+  letter-spacing: -0.02em;
+}
+
+.result-points span {
+  font-size: 1rem;
+  color: var(--text-muted);
+  font-weight: 400;
+  font-family: var(--font-body);
+}
+
+/* ─── Resumen de ronda ─── */
+.round-summary {
+  background: rgba(0, 0, 0, 0.35);
+  border-color: rgba(201, 168, 76, 0.18);
+}
