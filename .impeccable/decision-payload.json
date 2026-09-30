@@ -1,0 +1,125 @@
+{
+  "title": "Elige el estilo visual para Trukelele",
+  "question": "El sistema ha seleccionado 'Mesa de Dominó Desgastada'. Consérvalo, elige una alternativa o vuelve a lanzar los dados.",
+  "options": [
+    {
+      "id": "assigned",
+      "label": "Mesa de Dominó Desgastada",
+      "kicker": "LA SELECCIÓN",
+      "lineage": "Mesa física tradicional de cantina venezolana",
+      "thesis": "El juego se siente como una partida real y física entre amigos de toda la vida.",
+      "palette": [
+        "#4a3018",
+        "#2c1e10",
+        "#e5d8b8",
+        "#b43a28"
+      ],
+      "materials": [
+        "madera rayada",
+        "sombras duras de contacto",
+        "cartulina texturizada"
+      ],
+      "viewport": "Vista cenital sobre una mesa de madera oscura y rayada, las cartas tienen sombras densas.",
+      "risk": "Puede sentirse anticuado si la física del movimiento no es convincente.",
+      "raised": [
+        {
+          "from": "CRT Arcade",
+          "raise": "Estados de juego estrictamente definidos mediante indicadores visuales absolutos y claros (sin mezclas)."
+        },
+        {
+          "from": "Contador Nixie",
+          "raise": "Transiciones con física real de profundidad y elevación al tirar o agarrar una carta."
+        }
+      ],
+      "comp": ".impeccable/mocks/decision/assigned.webp",
+      "hero": ""
+    },
+    {
+      "id": "model-pick",
+      "label": "Etiqueta de Ron Añejo",
+      "kicker": "LA ELECCIÓN DE IMPECCABLE",
+      "lineage": "Etiquetas clásicas de licores venezolanos",
+      "thesis": "La interfaz como una etiqueta de diseño detallado, cálido y elegante.",
+      "palette": [
+        "#c88d3d",
+        "#f4ecd8",
+        "#1a1614"
+      ],
+      "materials": [
+        "papel pergamino",
+        "stamping dorado"
+      ],
+      "viewport": "Fondo cálido y claro con bordes ornamentales, texto tipográfico elegante y elementos resaltados en lámina dorada.",
+      "risk": "También es la dirección donde caen la mayoría de ejecuciones que buscan verse 'venezolanas', puede ser cliché.",
+      "comp": ".impeccable/mocks/decision/model-pick.webp"
+    },
+    {
+      "id": "challenger-cyclorama",
+      "label": "El Ciclorama Escénico",
+      "verdict": "competitive",
+      "lineage": "Iluminación teatral ciclorama",
+      "thesis": "La atmósfera y el flujo del juego guiados únicamente por cambios inmersivos de luz.",
+      "palette": [
+        "#050510",
+        "#1e3b70",
+        "#d94b4b",
+        "#e5e5e5"
+      ],
+      "materials": [
+        "luz direccional",
+        "fondos profundos"
+      ],
+      "viewport": "Un espacio abstracto donde focos de luz azul o roja iluminan la fase actual del juego o al jugador activo.",
+      "case": "Muy claro para seguir el estado del juego, aunque se aleja de la estética cultural típica.",
+      "risk": "Si las sombras no están bien resueltas, puede parecer un sitio web genérico en modo oscuro.",
+      "comp": ".impeccable/mocks/decision/challenger-cyclorama.webp",
+      "hero": "https://impeccable.style/worlds/cards/stagecraft-theater-lighting-cyclorama-dawn-hero.webp"
+    },
+    {
+      "id": "challenger-miura",
+      "label": "Hoja Desplegable",
+      "verdict": "declined",
+      "lineage": "Geometría Miura de despliegue",
+      "palette": [
+        "#f0f0f0",
+        "#4a5568",
+        "#d69e2e"
+      ],
+      "materials": [
+        "papel mate",
+        "pliegues marcados"
+      ],
+      "case": "Demasiada complejidad estructural para un juego de cartas rápido.",
+      "kept": "Diagramación técnica impecable para la sección de reglas.",
+      "hero": "https://impeccable.style/worlds/cards/paper-folds-pleats-deployable-miura-orbit-sheet-hero.webp"
+    }
+  ],
+  "reroll": {
+    "registers": [
+      "safer",
+      "bolder"
+    ]
+  },
+  "buildPath": {
+    "value": "comp",
+    "toggle": true
+  },
+  "canon": true,
+  "canonCard": {
+    "label": "El estándar de la categoría",
+    "thesis": "Como se ven todas las apps de casino y cartas.",
+    "palette": [
+      "#0f5e30",
+      "#ffffff",
+      "#1a1a1a"
+    ],
+    "materials": [
+      "fieltro verde liso",
+      "sombras suaves"
+    ],
+    "viewport": "Mesa de fieltro verde, cartas estándar blancas, muy familiar.",
+    "risk": "Completamente indistinguible de cualquier otra aplicación de póker o truco.",
+    "comp": ".impeccable/mocks/decision/canon.webp"
+  },
+  "steer": true
+}
